@@ -2,7 +2,7 @@
 
 #include <RenderEngine/export.h>
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
 	class RENDER_ENGINE_API RenderCommand
 	{

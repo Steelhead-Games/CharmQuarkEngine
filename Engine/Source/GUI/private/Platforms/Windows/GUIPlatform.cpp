@@ -10,7 +10,7 @@
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace GameEngine
+namespace cqe
 {
 	namespace GUI
 	{
@@ -24,14 +24,14 @@ namespace GameEngine
 
 			ImGui::StyleColorsDark();
 
-			ImGui_ImplWin32_Init(GameEngine::Core::g_MainWindowsApplication->GetWindowHandle());
+			ImGui_ImplWin32_Init(cqe::Core::g_MainWindowsApplication->GetWindowHandle());
 		}
 
-		void GUIContextPlatform::InitRenderBackend(std::shared_ptr<Render::HAL::RHIContext> rhiContext)
+		void GUIContextPlatform::InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)
 		{
-			switch (Render::HAL::RHIHelper::GetRHIType())
+			switch (Render::RHI::Helper::GetRHIType())
 			{
-			case Render::HAL::RHIType::D3D12:
+			case Render::RHI::Type::D3D12:
 				D3D12RenderBackend::Init(rhiContext);
 				break;
 			default:
@@ -51,9 +51,9 @@ namespace GameEngine
 		{
 			ImGui_ImplWin32_NewFrame();
 
-			switch (Render::HAL::RHIHelper::GetRHIType())
+			switch (Render::RHI::Helper::GetRHIType())
 			{
-			case Render::HAL::RHIType::D3D12:
+			case Render::RHI::Type::D3D12:
 				D3D12RenderBackend::NewFrame();
 				break;
 			default:
@@ -64,9 +64,9 @@ namespace GameEngine
 
 		void GUIContextPlatform::Render(ImDrawData* drawData)
 		{
-			switch (Render::HAL::RHIHelper::GetRHIType())
+			switch (Render::RHI::Helper::GetRHIType())
 			{
-			case Render::HAL::RHIType::D3D12:
+			case Render::RHI::Type::D3D12:
 				D3D12RenderBackend::Render(drawData);
 				break;
 			default:

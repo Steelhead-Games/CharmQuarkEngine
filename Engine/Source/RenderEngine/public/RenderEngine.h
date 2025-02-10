@@ -5,11 +5,11 @@
 #include <RenderObject.h>
 #include <Window/IWindow.h>
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
-	namespace HAL
+	namespace RHI
 	{
-		class RHIContext;
+		class Context;
 	}
 
 	class RENDER_ENGINE_API RenderEngine final
@@ -23,11 +23,11 @@ namespace GameEngine::Render
 
 		void CreateRenderObject(RenderCore::Geometry* geometry, RenderObject* renderObject);
 
-		std::shared_ptr<HAL::RHIContext> GetRHI() const { return m_rhi; }
+		std::shared_ptr<RHI::Context> GetRHI() const { return m_rhi; }
 
 	private:
 		std::vector<RenderObject*> m_RenderObjects;
 
-		std::shared_ptr<HAL::RHIContext> m_rhi;
+		std::shared_ptr<RHI::Context> m_rhi;
 	};
 }

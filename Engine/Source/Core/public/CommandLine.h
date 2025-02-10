@@ -2,7 +2,7 @@
 
 #include <Core/export.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Core
 	{

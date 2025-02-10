@@ -2,64 +2,64 @@
 
 #include <Geometry.h>
 #include <RHI/RHI/export.h>
-#include <RHIBuffer.h>
+#include <Buffer.h>
 #include <RHICore.h>
-#include <RHIMesh.h>
-#include <RHIDevice.h>
-#include <RHIFactory.h>
-#include <RHISwapChain.h>
-#include <RHIFence.h>
-#include <RHICommandQueue.h>
-#include <RHICommandAllocator.h>
-#include <RHICommandList.h>
-#include <RHITexture.h>
-#include <RHITechnique.h>
-#include <RHIPipelineStateObject.h>
+#include <Mesh.h>
+#include <Device.h>
+#include <Factory.h>
+#include <SwapChain.h>
+#include <Fence.h>
+#include <CommandQueue.h>
+#include <CommandAllocator.h>
+#include <CommandList.h>
+#include <Texture.h>
+#include <Technique.h>
+#include <PipelineStateObject.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		enum class RHIType : uint8_t
+		enum class Type : uint8_t
 		{
 			D3D12 = 0,
 		};
 
-		const std::unordered_map<std::string, RHIType> k_RHITypeMap =
+		const std::unordered_map<std::string, Type> k_RHITypeMap =
 		{
-			{"D3D12", RHIType::D3D12},
+			{"D3D12", Type::D3D12},
 		};
 
-		class RHIContext
+		class Context
 		{
 		public:
-			using Ptr = std::shared_ptr<RHIContext>;
+			using Ptr = std::shared_ptr<Context>;
 
 		public:
-			virtual RHITexture::Ptr CreateTexture(const RHITexture::Description& description) = 0;
-			virtual RHIBuffer::Ptr CreateBuffer(RHIBuffer::Description&& description) = 0;
-			virtual RHITechnique::Ptr CreateTechnique(
-				const RHITechnique::ShaderInfo& shaderInfo,
-				const RHITechnique::InputLayout& inputLayout,
-				const RHITechnique::RootSignature& rootSignature
+			virtual Texture::Ptr CreateTexture(const Texture::Description& description) = 0;
+			virtual Buffer::Ptr CreateBuffer(Buffer::Description&& description) = 0;
+			virtual Technique::Ptr CreateTechnique(
+				const Technique::ShaderInfo& shaderInfo,
+				const Technique::InputLayout& inputLayout,
+				const Technique::RootSignature& rootSignature
 			) = 0;
-			virtual RHIPipelineStateObject::Ptr CreatePSO(const RHIPipelineStateObject::Description& description) = 0;
-			virtual RHIMesh::Ptr CreateMesh(
-				const RHIMesh::VertexBufferDescription& vertexDesc,
-				const RHIMesh::IndexBufferDescription& indexDesc
+			virtual PipelineStateObject::Ptr CreatePSO(const PipelineStateObject::Description& description) = 0;
+			virtual Mesh::Ptr CreateMesh(
+				const Mesh::VertexBufferDescription& vertexDesc,
+				const Mesh::IndexBufferDescription& indexDesc
 			) = 0;
 			virtual void SetDescriptorHeaps() = 0;
 
 		public:
-			virtual RHIDevice::Ptr GetDevice() const = 0;
-			virtual RHIFactory::Ptr GetFactory() const = 0;
-			virtual RHISwapChain::Ptr GetSwapChain() const = 0;
-			virtual RHIFence::Ptr GetFence() const = 0;
-			virtual RHICommandQueue::Ptr GetCommandQueue() const = 0;
-			virtual RHICommandList::Ptr GetCommandList() const = 0;
+			virtual Device::Ptr GetDevice() const = 0;
+			virtual Factory::Ptr GetFactory() const = 0;
+			virtual SwapChain::Ptr GetSwapChain() const = 0;
+			virtual Fence::Ptr GetFence() const = 0;
+			virtual CommandQueue::Ptr GetCommandQueue() const = 0;
+			virtual CommandList::Ptr GetCommandList() const = 0;
 
 		protected:
-			RHIContext() = default;
+			Context() = default;
 		};
 	}
 }

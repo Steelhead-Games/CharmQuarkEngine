@@ -8,7 +8,7 @@
 #include <Timer.h>
 #include <Window/IWindow.h>
 
-namespace GameEngine
+namespace cqe
 {
 	class Game final
 	{

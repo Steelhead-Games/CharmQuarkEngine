@@ -1,7 +1,7 @@
 #include <EntityManager.h>
 #include <ECS/ecsSystems.h>
 
-namespace GameEngine::EntitySystem
+namespace cqe::EntitySystem
 {
 	EntityManager::EntityManager(Render::RenderThread* const renderThread)
 	{

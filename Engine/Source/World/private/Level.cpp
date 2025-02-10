@@ -1,6 +1,6 @@
 #include <Level.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	Level::Level(std::string& name)
 		: m_Name(std::move(name))

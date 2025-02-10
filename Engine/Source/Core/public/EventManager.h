@@ -2,7 +2,7 @@
 
 #include <Core/export.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	class CORE_API EventManager final
 	{

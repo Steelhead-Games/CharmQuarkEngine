@@ -6,7 +6,7 @@
 #include <RenderThread.h>
 #include <RenderObject.h>
 
-using namespace GameEngine;
+using namespace cqe;
 
 void RegisterEcsMeshSystems(flecs::world& world)
 {

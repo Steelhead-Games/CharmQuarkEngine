@@ -1,8 +1,8 @@
 #pragma once
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
 		/*
 		* Represents the native render hardware object

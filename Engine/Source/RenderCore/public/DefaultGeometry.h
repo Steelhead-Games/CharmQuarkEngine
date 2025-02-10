@@ -4,7 +4,7 @@
 #include <Geometry.h>
 #include <Vector.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace RenderCore
 	{

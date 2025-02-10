@@ -6,7 +6,7 @@
 #include <RenderThread.h>
 #include <RenderObject.h>
 
-namespace GameEngine::EntitySystem::ECS
+namespace cqe::EntitySystem::ECS
 {
 	void RegisterEcsCoreSystems(flecs::world& world)
 	{

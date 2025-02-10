@@ -5,7 +5,7 @@
 #include <Parser/ComponentParser.h>
 #include <Parser/WorldParser.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	WorldParser::CustomComponentsMap WorldParser::s_CustomComponents =
 	{

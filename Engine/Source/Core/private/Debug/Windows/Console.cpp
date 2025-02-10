@@ -1,7 +1,7 @@
 #include <Debug/Console.h>
 #include <windows.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	void Console::PrintDebug(const std::string& message)
 	{

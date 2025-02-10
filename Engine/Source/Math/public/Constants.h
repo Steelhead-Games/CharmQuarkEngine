@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GameEngine::Math
+namespace cqe::Math
 {
 	namespace Constants
 	{

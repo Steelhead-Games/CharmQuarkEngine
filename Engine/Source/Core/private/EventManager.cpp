@@ -1,6 +1,6 @@
 #include <EventManager.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	void EventManager::RegisterCallback(const std::string& eventName, Event callback)
 	{

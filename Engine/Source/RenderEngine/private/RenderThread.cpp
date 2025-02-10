@@ -2,7 +2,7 @@
 #include <RenderEngine.h>
 #include <RenderThread.h>
 
-using namespace GameEngine::Render;
+using namespace cqe::Render;
 
 namespace
 {
@@ -14,7 +14,7 @@ namespace
 	}
 }
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
 	RenderThread::RenderThread()
 	{

@@ -10,7 +10,7 @@
 #undef max
 #endif
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
 	class RENDER_ENGINE_API RenderObject final
 	{

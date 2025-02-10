@@ -5,7 +5,7 @@
 #include <Input/Buttons.h>
 #include <Vector.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	// This is just a layer between a controller and OS-specific commands to determine which buttons are pressed
 	// That is why it is singleton

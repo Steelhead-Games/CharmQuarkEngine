@@ -8,7 +8,7 @@
 #include <Input/Windows/WindowsKeyboardButtons.h>
 #include <Window/IWindow.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	Window::Ptr g_MainWindowsApplication = nullptr;
 

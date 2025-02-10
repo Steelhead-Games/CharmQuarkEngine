@@ -5,7 +5,7 @@
 #include <GUIContext.h>
 #include <Input/InputHandler.h>
 
-namespace GameEngine
+namespace cqe
 {
 	Game::Game(
 		std::function<bool()> PlatformLoopFunc

@@ -2,12 +2,12 @@
 
 #include <flecs.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	class Camera;
 }
 
-namespace GameEngine::EntitySystem::EditorECS
+namespace cqe::EntitySystem::EditorECS
 {
 	struct CameraPtr
 	{

@@ -5,7 +5,7 @@
 #include <RenderThread.h>
 #include <Timer.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace GUI
 	{

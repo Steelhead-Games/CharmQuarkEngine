@@ -4,7 +4,7 @@
 #include <Matrix.h>
 #include <Vector.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Core
 	{

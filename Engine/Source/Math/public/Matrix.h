@@ -3,7 +3,7 @@
 #include <Math/export.h>
 #include <Vector.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Math
 	{

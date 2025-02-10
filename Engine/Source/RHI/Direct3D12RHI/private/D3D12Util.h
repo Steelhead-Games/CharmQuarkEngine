@@ -12,9 +12,9 @@
 #include <d3dx12.h>
 #include <DDSTextureLoader.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
 		struct D3D12Util
 		{

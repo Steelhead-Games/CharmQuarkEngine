@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	
 }

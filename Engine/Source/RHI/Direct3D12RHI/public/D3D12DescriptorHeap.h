@@ -5,13 +5,13 @@
 #include <d3d12.h>
 #include <dxgi.h>
 
-#include <RHITexture.h>
+#include <Texture.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		class D3D12RHIDevice;
+		class D3D12Device;
 
 		class DIRECT3D_API D3D12DescriptorHeap final : public RefCounter<RenderBackendResource>
 		{
@@ -21,10 +21,11 @@ namespace GameEngine
 		public:
 			D3D12DescriptorHeap() = delete;
 			D3D12DescriptorHeap(
-				RefCountPtr<D3D12RHIDevice> device,
+				RefCountPtr<D3D12Device> device,
 				uint32_t NumDescriptors,
 				D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeapType
 			);
+			~D3D12DescriptorHeap() = default;
 
 		public:
 			void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* gpuHandle = nullptr);

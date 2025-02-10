@@ -1,6 +1,6 @@
 #include <Geometry.h>
 
-namespace GameEngine::RenderCore
+namespace cqe::RenderCore
 {
 	Geometry::Geometry(
 		VertexType* vertices,

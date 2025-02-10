@@ -1,6 +1,6 @@
 #include <Camera.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	Camera* g_MainCamera = nullptr;
 

@@ -2,7 +2,7 @@
 
 #include <flecs.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	class Camera;
 	class Controller;
@@ -10,7 +10,7 @@ namespace GameEngine::Core
 
 struct ControllerPtr
 {
-	GameEngine::Core::Controller* ptr;
+	cqe::Core::Controller* ptr;
 };
 
 struct JumpSpeed
@@ -20,7 +20,7 @@ struct JumpSpeed
 
 struct CameraPtr
 {
-	GameEngine::Core::Camera* ptr;
+	cqe::Core::Camera* ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);

@@ -3,9 +3,9 @@
 #include <Debug/Assertions.h>
 #include <RHI/RHI/export.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
 		enum class ResourceFormat : uint8_t
 		{
@@ -370,7 +370,7 @@ namespace GameEngine
 			static const Flag Stencil = 0x02;
 		};
 
-		namespace RHISettings
+		namespace Settings
 		{
 			constexpr ResourceFormat BackBuffer = ResourceFormat::RGBA8_UNORM;
 		};

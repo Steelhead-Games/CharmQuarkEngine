@@ -1,13 +1,13 @@
 #include <RHIHelper.h>
-#include <D3D12RHIContext.h>
+#include <D3D12Context.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		RHIType RHIHelper::s_rhiType = RHIType::D3D12;
+		Type Helper::s_rhiType = Type::D3D12;
 
-		RHIContext::Ptr RHIHelper::CreateRHI(const std::string& RHIName)
+		Context::Ptr Helper::CreateRHI(const std::string& RHIName)
 		{
 			const auto& it = k_RHITypeMap.find(RHIName);
 
@@ -17,15 +17,15 @@ namespace GameEngine
 
 			switch (s_rhiType)
 			{
-			case RHIType::D3D12:
-				return std::make_shared<D3D12RHIContext>();
+			case Type::D3D12:
+				return std::make_shared<D3D12Context>();
 			default:
 				assert(false && std::format("{} is not supported on the current OS", RHIName).c_str());
-				return std::make_shared<D3D12RHIContext>();
+				return std::make_shared<D3D12Context>();
 			}
 		}
 
-		RHIType RHIHelper::GetRHIType()
+		Type Helper::GetRHIType()
 		{
 			return s_rhiType;
 		}

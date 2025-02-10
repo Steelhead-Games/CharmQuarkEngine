@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace GameEngine
+namespace cqe
 {
 	namespace GUI
 	{

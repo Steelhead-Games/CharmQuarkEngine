@@ -5,10 +5,10 @@
 
 struct GeometryPtr
 {
-	GameEngine::RenderCore::Geometry* ptr;
+	cqe::RenderCore::Geometry* ptr;
 };
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Render
 	{
@@ -25,9 +25,9 @@ namespace GameEngine
 
 		struct RenderObjectPtr
 		{
-			GameEngine::Render::RenderObject* ptr = nullptr;
+			cqe::Render::RenderObject* ptr = nullptr;
 
-			GameEngine::Render::RenderObject** GetAddressOf()
+			cqe::Render::RenderObject** GetAddressOf()
 			{
 				return &ptr;
 			}

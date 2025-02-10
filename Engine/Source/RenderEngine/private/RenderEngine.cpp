@@ -5,15 +5,15 @@
 #include <RHICore.h>
 #include <RHIHelper.h>
 #include <Material.h>
-#include <RHIMesh.h>
-#include <RHITexture.h>
-#include <RHITechnique.h>
-#include <RHIBuffer.h>
-#include <RHIPipelineStateObject.h>
+#include <Mesh.h>
+#include <Texture.h>
+#include <Technique.h>
+#include <Buffer.h>
+#include <PipelineStateObject.h>
 
 #include <GUIContext.h>
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
 	// Supposed to be as a part of Render Pass
 	struct ObjectConstants
@@ -31,18 +31,18 @@ namespace GameEngine::Render
 		Math::Vector3f Pos;
 	};
 
-	HAL::RHIBuffer::Ptr m_ObjectCB[RenderCore::g_FrameBufferCount];
-	HAL::RHIBuffer::Ptr m_MaterialCB[RenderCore::g_FrameBufferCount];
-	HAL::RHITechnique::Ptr m_Technique;
-	HAL::RHIPipelineStateObject::Ptr m_PSO;
-	HAL::RHITexture::Ptr depthStencil;
-	std::vector<HAL::RHIMesh::Ptr> m_Meshes;
+	RHI::Buffer::Ptr m_ObjectCB[RenderCore::g_FrameBufferCount];
+	RHI::Buffer::Ptr m_MaterialCB[RenderCore::g_FrameBufferCount];
+	RHI::Technique::Ptr m_Technique;
+	RHI::PipelineStateObject::Ptr m_PSO;
+	RHI::Texture::Ptr depthStencil;
+	std::vector<RHI::Mesh::Ptr> m_Meshes;
 	std::vector<Material*> m_Materials;
 	// End: Supposed to be as a part of Render Pass
 
 	RenderEngine::RenderEngine()
 	{
-		m_rhi = HAL::RHIHelper::CreateRHI("D3D12");
+		m_rhi = RHI::Helper::CreateRHI("D3D12");
 
 		OnResize();
 
@@ -54,7 +54,7 @@ namespace GameEngine::Render
 				{
 					.Count = RenderCore::g_MaximumRenderObjectCount,
 					.ElementSize = sizeof(ObjectConstants),
-					.UsageFlag = HAL::RHIBuffer::UsageFlag::ConstantBuffer
+					.UsageFlag = RHI::Buffer::UsageFlag::ConstantBuffer
 				}
 			);
 
@@ -62,38 +62,38 @@ namespace GameEngine::Render
 				{
 					.Count = RenderCore::g_MaximumRenderObjectCount,
 					.ElementSize = sizeof(MaterialConstants),
-					.UsageFlag = HAL::RHIBuffer::UsageFlag::ConstantBuffer
+					.UsageFlag = RHI::Buffer::UsageFlag::ConstantBuffer
 				}
 			);
 		}
 
-		HAL::RHITechnique::ShaderInfo shaderInfo =
+		RHI::Technique::ShaderInfo shaderInfo =
 		{
 			{
-				.Type = HAL::RHITechnique::ShaderInfoDescription::ShaderType::VertexShader,
+				.Type = RHI::Technique::ShaderInfoDescription::ShaderType::VertexShader,
 				.ShaderFile = "Object.hlsl",
 				.EntryPoint = "VS",
 			},
 			{
-				.Type = HAL::RHITechnique::ShaderInfoDescription::ShaderType::PixelShader,
+				.Type = RHI::Technique::ShaderInfoDescription::ShaderType::PixelShader,
 				.ShaderFile = "Object.hlsl",
 				.EntryPoint = "PS",
 			}
 		};
 
-		HAL::RHITechnique::InputLayout inputLayout =
+		RHI::Technique::InputLayout inputLayout =
 		{
 			{
 				.SemanticName = "POSITION",
 				.Index = 0,
-				.Format = HAL::ResourceFormat::RGB32_FLOAT,
+				.Format = RHI::ResourceFormat::RGB32_FLOAT,
 				.InputSlot = 0,
-				.InputSlotClass = HAL::RHITechnique::InputLayoutDescription::Classification::PerVertex,
+				.InputSlotClass = RHI::Technique::InputLayoutDescription::Classification::PerVertex,
 				.InstanceDataStepRate = 0
 			}
 		};
 
-		HAL::RHITechnique::RootSignature rootSignature =
+		RHI::Technique::RootSignature rootSignature =
 		{
 			{
 				.SlotIndex = 0,
@@ -109,7 +109,7 @@ namespace GameEngine::Render
 
 		m_Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignature);
 
-		HAL::RHIPipelineStateObject::Description desc;
+		RHI::PipelineStateObject::Description desc;
 		desc.Technique = m_Technique;
 		desc.NumRenderTargets = 1;
 		desc.RTVFormats[0] = m_rhi->GetSwapChain()->GetCurrentBackBuffer()->GetFormat();
@@ -135,9 +135,9 @@ namespace GameEngine::Render
 
 		m_rhi->GetCommandList()->SetPipelineStateObject(m_PSO);
 
-		HAL::Rect scissorRect(0, Core::g_MainWindowsApplication->GetWidth(), 0, Core::g_MainWindowsApplication->GetHeight());
+		RHI::Rect scissorRect(0, Core::g_MainWindowsApplication->GetWidth(), 0, Core::g_MainWindowsApplication->GetHeight());
 
-		HAL::Viewport viewport(
+		RHI::Viewport viewport(
 			0.f, static_cast<float>(Core::g_MainWindowsApplication->GetWidth()),
 			0.f, static_cast<float>(Core::g_MainWindowsApplication->GetHeight()),
 			0.f, 1.f
@@ -147,7 +147,7 @@ namespace GameEngine::Render
 		m_rhi->GetCommandList()->SetScissorRect(scissorRect);
 
 		m_rhi->GetCommandList()->ClearRenderTarget(m_rhi->GetSwapChain()->GetCurrentBackBuffer(), RenderCore::Colors::LightSteelBlue);
-		m_rhi->GetCommandList()->ClearDepthStencilView(depthStencil, HAL::ClearFlags::Depth | HAL::ClearFlags::Stencil, 1.0f, 0);
+		m_rhi->GetCommandList()->ClearDepthStencilView(depthStencil, RHI::ClearFlags::Depth | RHI::ClearFlags::Stencil, 1.0f, 0);
 
 		m_rhi->GetCommandList()->SetRenderTargets(1, m_rhi->GetSwapChain()->GetCurrentBackBuffer(), depthStencil);
 
@@ -158,7 +158,7 @@ namespace GameEngine::Render
 			assert(renderObject);
 
 			//Draw
-			HAL::RHIMesh::ID meshID = renderObject->GetMeshID();
+			RHI::Mesh::ID meshID = renderObject->GetMeshID();
 			Material::ID materialID = renderObject->GetMaterialID();
 
 			assert(meshID >= 0);
@@ -189,7 +189,7 @@ namespace GameEngine::Render
 			m_MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()]->CopyData(materialID, &matConstants, sizeof(MaterialConstants));
 
 			m_rhi->GetCommandList()->SetMesh(m_Meshes[meshID]);
-			m_rhi->GetCommandList()->SetPrimitiveTopology(HAL::PrimitiveTopology::TriangleList);
+			m_rhi->GetCommandList()->SetPrimitiveTopology(RHI::PrimitiveTopology::TriangleList);
 
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(0, m_ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], meshID);
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, m_MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
@@ -231,12 +231,12 @@ namespace GameEngine::Render
 
 			depthStencil.Reset();
 
-			HAL::RHITexture::Description description;
-			description.Dimension = HAL::RHITexture::Dimensions::Two;
+			RHI::Texture::Description description;
+			description.Dimension = RHI::Texture::Dimensions::Two;
 			description.Width = Core::g_MainWindowsApplication->GetWidth();
 			description.Height = Core::g_MainWindowsApplication->GetHeight();
-			description.Format = HAL::ResourceFormat::D24S8;
-			description.Flags = HAL::RHITexture::UsageFlags::DepthStencil;
+			description.Format = RHI::ResourceFormat::D24S8;
+			description.Flags = RHI::Texture::UsageFlags::DepthStencil;
 
 			depthStencil = m_rhi->CreateTexture(description);
 
@@ -249,8 +249,8 @@ namespace GameEngine::Render
 		assert(geometry);
 		assert(renderObject);
 
-		HAL::RHIMesh::ID meshID = m_Meshes.size();
-		HAL::RHIMesh* mesh = m_rhi->CreateMesh(
+		RHI::Mesh::ID meshID = m_Meshes.size();
+		RHI::Mesh* mesh = m_rhi->CreateMesh(
 			{
 				.Count = geometry->GetVertexCount(),
 				.ElementSize = sizeof(RenderCore::Geometry::VertexType),
@@ -258,7 +258,7 @@ namespace GameEngine::Render
 			},
 			{
 				.Count = geometry->GetIndexCount(),
-				.Format = HAL::ResourceFormat::R16_UINT,
+				.Format = RHI::ResourceFormat::R16_UINT,
 				.initData = geometry->GetIndices()
 			});
 

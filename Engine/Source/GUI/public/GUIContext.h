@@ -7,12 +7,12 @@
 struct ImGuiContext;
 struct ImDrawData;
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		enum class RHIType : uint8_t;
-		class RHIContext;
+		enum class Type : uint8_t;
+		class Context;
 	}
 
 	namespace GUI
@@ -24,7 +24,7 @@ namespace GameEngine
 
 		public:
 			void PlatformInit();
-			void InitRenderBackend(std::shared_ptr<Render::HAL::RHIContext> rhiContext);
+			void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			bool UpdateInput(Core::PackedVariables& arguments);
 			bool IsUIHovered() const;
 			void UnFocus() const;

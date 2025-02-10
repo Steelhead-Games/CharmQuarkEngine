@@ -3,7 +3,7 @@
 #include <INIReader.h>
 #include <Input/InputHandler.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	InputHandler* InputHandler::m_Instance = nullptr;
 

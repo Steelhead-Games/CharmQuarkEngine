@@ -6,7 +6,7 @@
 
 struct ImDrawData;
 
-namespace GameEngine
+namespace cqe
 {
 	namespace GUI
 	{
@@ -18,7 +18,7 @@ namespace GameEngine
 			D3D12RenderBackend operator=(D3D12RenderBackend&) = delete;
 
 		public:
-			static void Init(Render::HAL::RHIContext::Ptr rhiContext);
+			static void Init(Render::RHI::Context::Ptr rhiContext);
 			static void Render(ImDrawData* drawData);
 			static void NewFrame();
 		};

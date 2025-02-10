@@ -1,6 +1,6 @@
 #include <LevelObject.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	void LevelObject::AddComponent(const ComponentName& name, const ComponentDesc& desc)
 	{

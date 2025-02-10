@@ -1,6 +1,6 @@
 #include <PackedVariables.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	PackedVariables::PackedVariables()
 	{

@@ -5,7 +5,7 @@
 
 #include <EditorECS/ecsEditor.h>
 
-namespace GameEngine::EntitySystem::LevelEditorECS
+namespace cqe::EntitySystem::LevelEditorECS
 {
 	struct PositionDesc
 	{

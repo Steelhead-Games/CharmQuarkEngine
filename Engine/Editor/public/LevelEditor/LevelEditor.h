@@ -5,7 +5,7 @@
 #include <Timer.h>
 #include <flecs.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Editor
 	{

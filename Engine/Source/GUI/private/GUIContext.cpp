@@ -2,7 +2,7 @@
 #include <GUIPlatform.h>
 #include <RHIContext.h>
 
-namespace GameEngine::GUI
+namespace cqe::GUI
 {
 	GUIContext* GUIContext::m_Instance = nullptr;
 
@@ -21,7 +21,7 @@ namespace GameEngine::GUI
 		GUIContextPlatform::Init();
 	}
 
-	void GUIContext::InitRenderBackend(std::shared_ptr<Render::HAL::RHIContext> rhiContext)
+	void GUIContext::InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)
 	{
 		GUIContextPlatform::InitRenderBackend(rhiContext);
 	}

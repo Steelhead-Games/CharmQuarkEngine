@@ -2,7 +2,7 @@
 
 #include <Core/export.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	template <typename T, size_t N>
 	struct array

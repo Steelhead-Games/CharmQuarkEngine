@@ -2,7 +2,7 @@
 
 #include <Constants.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Math
 	{

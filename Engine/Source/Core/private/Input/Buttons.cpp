@@ -1,6 +1,6 @@
 #include <Input/Buttons.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	const std::unordered_map<std::string, KeyboardButton> KeyboardButtonsMap =
 	{

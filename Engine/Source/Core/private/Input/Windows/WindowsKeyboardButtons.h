@@ -2,7 +2,7 @@
 
 #include <Input/Buttons.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Core
 	{

@@ -2,7 +2,7 @@
 
 #include <RenderCore/export.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace RenderCore
 	{

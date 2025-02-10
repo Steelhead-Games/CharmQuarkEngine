@@ -2,7 +2,7 @@
 
 #include <Math/export.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Math
 	{

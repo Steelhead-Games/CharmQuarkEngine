@@ -3,7 +3,7 @@
 
 #include <tinyxml2.h>
 
-namespace GameEngine::Editor
+namespace cqe::Editor
 {
 	[[nodiscard]] World::Level LevelSerializer::Deserialize(const std::string& filepath)
 	{

@@ -1,6 +1,6 @@
 #include <FileSystem.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	FileSystem::Ptr g_FileSystem = nullptr;
 

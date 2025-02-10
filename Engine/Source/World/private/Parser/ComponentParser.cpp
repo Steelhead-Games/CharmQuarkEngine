@@ -1,7 +1,7 @@
 #include <Input/Controller.h>
 #include <Parser/ComponentParser.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	std::unordered_map<ComponentParser::ComponentName, ComponentParser::ComponentConstructor> ComponentParser::s_CustomComponentConstructors =
 	{

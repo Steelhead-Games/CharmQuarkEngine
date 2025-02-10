@@ -3,7 +3,7 @@
 #include <Level.h>
 #include <Filesystem.h>
 
-namespace GameEngine::Editor
+namespace cqe::Editor
 {
 	class LevelSerializer final
 	{

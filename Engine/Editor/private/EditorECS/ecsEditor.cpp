@@ -10,7 +10,7 @@
 #include <RenderObject.h>
 #include <Window/IWindow.h>
 
-namespace GameEngine::EntitySystem::EditorECS
+namespace cqe::EntitySystem::EditorECS
 {
 	void RegisterEditorEcsControlSystems(flecs::world& world)
 	{

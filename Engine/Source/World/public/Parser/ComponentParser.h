@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	class ComponentParser final
 	{

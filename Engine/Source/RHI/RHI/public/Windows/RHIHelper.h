@@ -3,19 +3,19 @@
 #include <RHIContext.h>
 #include <RHI/RHI/export.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		class RHI_API RHIHelper final
+		class RHI_API Helper final
 		{
 		public:
 			// RHI - e.g. "Vulkan" or "D3D12"
-			static RHIContext::Ptr CreateRHI(const std::string& RHIName);
-			static RHIType GetRHIType();
+			static Context::Ptr CreateRHI(const std::string& RHIName);
+			static Type GetRHIType();
 
 		private:
-			static RHIType s_rhiType;
+			static Type s_rhiType;
 		};
 	}
 }

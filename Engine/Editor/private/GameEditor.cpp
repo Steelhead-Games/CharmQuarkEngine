@@ -11,7 +11,7 @@
 
 #include <imgui.h>
 
-namespace GameEngine
+namespace cqe
 {
 	GameEditor::GameEditor(
 		std::function<bool()> PlatformLoopFunc

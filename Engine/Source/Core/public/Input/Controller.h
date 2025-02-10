@@ -4,7 +4,7 @@
 #include <Core/export.h>
 #include <FileSystem.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Core
 	{

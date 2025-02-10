@@ -5,7 +5,7 @@
 #include <RenderThread.h>
 #include <Input/InputHandler.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace EntitySystem
 	{

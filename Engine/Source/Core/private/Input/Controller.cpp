@@ -2,7 +2,7 @@
 #include <Input/Controller.h>
 #include <Input/InputHandler.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	Controller::Controller(FileSystem::Path&& config)
 		: m_Config(std::move(config))

@@ -38,7 +38,7 @@ bool WindowsMessageLoop()
 void WaitForDebugger()
 {
 #if defined(DEBUG)
-	if (GameEngine::Core::g_CommandLineArguments->HasAttribute("wfd"))
+	if (cqe::Core::g_CommandLineArguments->HasAttribute("wfd"))
 	{
 		while (!::IsDebuggerPresent())
 		{
@@ -65,18 +65,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LPWSTR* argv = CommandLineToArgvW(lpCmdLine, &argc);
 	const std::vector<std::wstring> args(argv, argv + argc);
 
-	GameEngine::Core::g_CommandLineArguments = GameEngine::Core::CommandLine::Parse(args);
-	assert(GameEngine::Core::g_CommandLineArguments->HasAttribute("project_root"));
+	cqe::Core::g_CommandLineArguments = cqe::Core::CommandLine::Parse(args);
+	assert(cqe::Core::g_CommandLineArguments->HasAttribute("project_root"));
 
 	WaitForDebugger();
 
-	GameEngine::Core::g_MainWindowsApplication = std::make_unique<GameEngine::Core::Window>();
-	GameEngine::Core::g_MainWindowsApplication->Init(hInstance);
-	GameEngine::Core::g_MainWindowsApplication->ReleaseMouse();
+	cqe::Core::g_MainWindowsApplication = std::make_unique<cqe::Core::Window>();
+	cqe::Core::g_MainWindowsApplication->Init(hInstance);
+	cqe::Core::g_MainWindowsApplication->ReleaseMouse();
 
-	GameEngine::Core::g_FileSystem = GameEngine::Core::FileSystem::Create(GameEngine::Core::g_CommandLineArguments->GetAttribute("project_root"));
+	cqe::Core::g_FileSystem = cqe::Core::FileSystem::Create(cqe::Core::g_CommandLineArguments->GetAttribute("project_root"));
 
-	std::unique_ptr<GameEngine::GameEditor> gameEditor = std::make_unique<GameEngine::GameEditor>(&WindowsMessageLoop);
+	std::unique_ptr<cqe::GameEditor> gameEditor = std::make_unique<cqe::GameEditor>(WindowsMessageLoop);
 
 	gameEditor->Run();
 

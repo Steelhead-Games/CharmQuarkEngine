@@ -4,7 +4,7 @@
 
 #include <LevelObject.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	class WORLD_API Level final
 	{

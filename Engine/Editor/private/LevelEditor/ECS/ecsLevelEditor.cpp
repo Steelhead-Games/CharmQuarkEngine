@@ -3,8 +3,8 @@
 namespace
 {
 	void ParsePosition(
-		const GameEngine::EntitySystem::LevelEditorECS::PositionDesc& positionDesc,
-		GameEngine::EntitySystem::EditorECS::Position& position
+		const cqe::EntitySystem::LevelEditorECS::PositionDesc& positionDesc,
+		cqe::EntitySystem::EditorECS::Position& position
 	)
 	{
 		assert(positionDesc.value);
@@ -26,7 +26,7 @@ namespace
 	}
 }
 
-namespace GameEngine::EntitySystem::LevelEditorECS
+namespace cqe::EntitySystem::LevelEditorECS
 {
 	void RegisterLevelEditorEcsSystems(flecs::world& world)
 	{

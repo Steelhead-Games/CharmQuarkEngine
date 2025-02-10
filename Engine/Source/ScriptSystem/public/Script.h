@@ -2,7 +2,7 @@
 
 #include <FileSystem.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace ScriptSystem
 	{

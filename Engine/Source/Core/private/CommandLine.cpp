@@ -1,7 +1,7 @@
 #include <CommandLine.h>
 #include <Debug/Console.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	CommandLine::Ptr g_CommandLineArguments = nullptr;
 

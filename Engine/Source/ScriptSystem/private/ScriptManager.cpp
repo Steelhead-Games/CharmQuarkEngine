@@ -7,7 +7,7 @@
 #include <Script.h>
 #include <ScriptManager.h>
 
-namespace GameEngine::ScriptSystem
+namespace cqe::ScriptSystem
 {
 	ScriptManager::ScriptManager(flecs::world& world)
 	{

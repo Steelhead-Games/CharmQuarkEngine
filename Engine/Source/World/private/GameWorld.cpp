@@ -1,7 +1,7 @@
 #include <GameWorld.h>
 #include <Parser/WorldParser.h>
 
-namespace GameEngine::World
+namespace cqe::World
 {
 	GameWorld* GameWorld::m_Instance = nullptr;
 

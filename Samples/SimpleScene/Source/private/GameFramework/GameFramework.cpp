@@ -9,7 +9,7 @@
 #include <RenderObject.h>
 #include <GameWorld.h>
 
-using namespace GameEngine;
+using namespace cqe;
 
 void GameFramework::Init()
 {

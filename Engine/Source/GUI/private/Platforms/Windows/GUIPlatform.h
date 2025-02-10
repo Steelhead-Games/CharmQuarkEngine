@@ -17,12 +17,12 @@
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
-		enum class RHIType : uint8_t;
-		class RHIContext;
+		enum class Type : uint8_t;
+		class Context;
 	}
 
 	namespace GUI
@@ -36,7 +36,7 @@ namespace GameEngine
 
 		public:
 			static void Init();
-			static void InitRenderBackend(std::shared_ptr<Render::HAL::RHIContext> rhiContext);
+			static void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			static bool UpdateInput(Core::PackedVariables& arguments);
 			static void NewFrame();
 			static void Render(ImDrawData* drawData);

@@ -1,6 +1,6 @@
 #include <Vector.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace Math
 	{

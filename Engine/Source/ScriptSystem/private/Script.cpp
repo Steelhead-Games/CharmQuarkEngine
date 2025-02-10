@@ -1,6 +1,6 @@
 #include <Script.h>
 
-namespace GameEngine::ScriptSystem
+namespace cqe::ScriptSystem
 {
 	Script::Script(const std::string& path)
 		: m_Path(path)

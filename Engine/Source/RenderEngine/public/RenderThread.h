@@ -5,11 +5,11 @@
 #include <RenderCore.h>
 #include <Threads.h>
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
-	namespace HAL
+	namespace RHI
 	{
-		class RHIContext;
+		class Context;
 	}
 
 	class RenderEngine;

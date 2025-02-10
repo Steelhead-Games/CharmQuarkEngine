@@ -4,7 +4,7 @@
 #include <Vector.h>
 #include <PackedVariables.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	class CORE_API Window
 	{

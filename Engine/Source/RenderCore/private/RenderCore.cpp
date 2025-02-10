@@ -1,6 +1,6 @@
 #include <RenderCore.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace RenderCore
 	{

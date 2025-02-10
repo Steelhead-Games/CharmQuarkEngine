@@ -1,7 +1,7 @@
 #include <RenderObject.h>
-#include <RHIMesh.h>
+#include <Mesh.h>
 
-namespace GameEngine::Render
+namespace cqe::Render
 {
 	RenderObject::RenderObject(MeshID meshID, Material::ID materialID)
 		: m_MeshID(meshID)
@@ -17,7 +17,7 @@ namespace GameEngine::Render
 
 	void RenderObject::Init()
 	{
-		static_assert(std::is_same_v<MeshID, HAL::RHIMesh::ID> == true, "RHIMesh::ID type should be the same as ID type in RenderObject");
+		static_assert(std::is_same_v<MeshID, RHI::Mesh::ID> == true, "RHI::Mesh::ID type should be the same as ID type in RenderObject");
 	}
 
 	RenderObject::~RenderObject()

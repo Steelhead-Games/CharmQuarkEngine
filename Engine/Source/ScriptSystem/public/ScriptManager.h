@@ -3,7 +3,7 @@
 #include <flecs.h>
 #include <ScriptSystem/export.h>
 
-namespace GameEngine
+namespace cqe
 {
 	namespace ScriptSystem
 	{

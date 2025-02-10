@@ -1,6 +1,6 @@
 #include <Timer.h>
 
-namespace GameEngine::Core
+namespace cqe::Core
 {
 	Timer::Timer()
 	{

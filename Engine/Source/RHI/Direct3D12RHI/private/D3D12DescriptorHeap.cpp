@@ -1,14 +1,14 @@
 #include <d3dx12.h>
 
-#include <D3D12RHIDevice.h>
+#include <D3D12Device.h>
 #include <D3D12DescriptorHeap.h>
 
-namespace GameEngine
+namespace cqe
 {
-	namespace Render::HAL
+	namespace Render::RHI
 	{
 		D3D12DescriptorHeap::D3D12DescriptorHeap(
-			RefCountPtr<D3D12RHIDevice> device,
+			RefCountPtr<D3D12Device> device,
 			uint32_t NumDescriptors,
 			D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeapType
 		) 

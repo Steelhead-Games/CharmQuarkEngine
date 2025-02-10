@@ -8,7 +8,7 @@
 #include <Input/InputHandler.h>
 #include <Vector.h>
 
-using namespace GameEngine;
+using namespace cqe;
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
