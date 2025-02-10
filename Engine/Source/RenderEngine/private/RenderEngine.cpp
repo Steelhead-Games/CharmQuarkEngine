@@ -129,6 +129,11 @@ namespace cqe::Render
 		{
 			delete ro;
 		}
+
+		for (auto const& m : m_Materials)
+		{
+			delete m;
+		}
 	}
 
 	void RenderEngine::Update(size_t frame)

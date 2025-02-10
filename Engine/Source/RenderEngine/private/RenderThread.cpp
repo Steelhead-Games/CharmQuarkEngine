@@ -22,13 +22,14 @@ namespace cqe::Render
 
 		s_MainThreadId = std::this_thread::get_id();
 
-		//m_FrameMutexes[m_CurMainFrame].lock();
+		m_FrameMutexes[m_CurMainFrame].lock();
 		m_Thread = new std::jthread{ RunThisThread, this };
 		m_Thread->detach();
 	}
 
 	RenderThread::~RenderThread()
 	{
+		m_FrameMutexes[m_CurMainFrame].unlock();
 		m_IsRunning = false;
 		while (m_IsRendering)
 		{
@@ -110,6 +111,8 @@ namespace cqe::Render
 	{
 		SwitchFrame();
 	}
+
+	std::vector<int> locks;
 
 	void RenderThread::SwitchFrame()
 	{
