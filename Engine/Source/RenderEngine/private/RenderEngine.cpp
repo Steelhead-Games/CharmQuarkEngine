@@ -123,6 +123,14 @@ namespace cqe::Render
 		m_rhi->GetFence()->Sync(m_rhi->GetCommandQueue());
 	}
 
+	RenderEngine::~RenderEngine()
+	{
+		for (auto const& ro : m_RenderObjects)
+		{
+			delete ro;
+		}
+	}
+
 	void RenderEngine::Update(size_t frame)
 	{
 		m_rhi->GetCommandList()->GetAllocator()->Reset();
@@ -262,14 +270,14 @@ namespace cqe::Render
 				.initData = geometry->GetIndices()
 			});
 
-		m_Meshes.push_back(mesh);
+			m_Meshes.push_back(mesh);
 
-		Material::ID materialID = m_Materials.size();
-		Material* material = new Material(materialID);
-		m_Materials.push_back(material);
+			Material::ID materialID = m_Materials.size();
+			Material* material = new Material(materialID);
+			m_Materials.push_back(material);
 
-		renderObject->SetMeshID(meshID);
-		renderObject->SetMaterialID(materialID);
-		m_RenderObjects.push_back(renderObject);
+			renderObject->SetMeshID(meshID);
+			renderObject->SetMaterialID(materialID);
+			m_RenderObjects.push_back(renderObject);
 	}
 }

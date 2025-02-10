@@ -51,8 +51,8 @@ namespace cqe::Render
 
 		inline static std::jthread::id s_RenderThreadId;
 		inline static std::jthread::id s_MainThreadId;
-		std::unique_ptr<std::jthread> m_Thread;
-		std::mutex frameMutex[RenderCore::g_FrameBufferCount];
+		std::jthread* m_Thread;
+		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
 		std::binary_semaphore m_RenderEngineIsReady{ 0 };
 
 		RenderEngine* m_RenderEngine = nullptr;
@@ -61,5 +61,8 @@ namespace cqe::Render
 		size_t m_CurMainFrame = 0;
 
 		std::vector<RenderCommand*> m_commands[RenderCore::g_FrameBufferCount];
+
+		bool m_IsRunning = false;
+		std::atomic_bool m_IsRendering = false;
 	};
 }

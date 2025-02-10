@@ -22,14 +22,19 @@ namespace cqe::Render
 
 		s_MainThreadId = std::this_thread::get_id();
 
-		frameMutex[m_CurMainFrame].lock();
-
-		m_Thread = std::make_unique<std::jthread>(RunThisThread, this);
+		//m_FrameMutexes[m_CurMainFrame].lock();
+		m_Thread = new std::jthread{ RunThisThread, this };
 		m_Thread->detach();
 	}
 
 	RenderThread::~RenderThread()
 	{
+		m_IsRunning = false;
+		while (m_IsRendering)
+		{
+
+		}
+		delete m_Thread;
 		delete m_RenderEngine;
 	}
 
@@ -42,9 +47,12 @@ namespace cqe::Render
 
 		m_RenderEngineIsReady.release();
 
-		while (true)
+		m_IsRunning = true;
+
+		while (m_IsRunning)
 		{
-			std::lock_guard<std::mutex> lock(frameMutex[m_CurrRenderFrame]);
+			m_IsRendering = true;
+			std::lock_guard<std::mutex> lock(m_FrameMutexes[m_CurrRenderFrame]);
 
 			ProcessCommands();
 
@@ -53,6 +61,7 @@ namespace cqe::Render
 			m_RenderEngine->OnEndFrame();
 
 			OnEndFrame();
+			m_IsRendering = false;
 		}
 	}
 
@@ -110,11 +119,11 @@ namespace cqe::Render
 		}
 		else
 		{
-			frameMutex[m_CurMainFrame].unlock();
+			m_FrameMutexes[m_CurMainFrame].unlock();
 
 			m_CurMainFrame = GetNextFrame(m_CurMainFrame);
 
-			frameMutex[m_CurMainFrame].lock();
+			m_FrameMutexes[m_CurMainFrame].lock();
 		}
 	}
 

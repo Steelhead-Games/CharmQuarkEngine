@@ -67,7 +67,7 @@ namespace cqe
 
 			GUI::GUIContext::GetInstance()->Draw();
 
-			m_renderThread->OnEndFrame();
+			//m_renderThread->OnEndFrame();
 
 			// The most common idea for such a loop is that it returns false when quit is required, or true otherwise
 			quit = !PlatformLoop();
