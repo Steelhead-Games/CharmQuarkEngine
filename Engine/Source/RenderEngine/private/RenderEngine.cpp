@@ -125,12 +125,12 @@ namespace cqe::Render
 
 	RenderEngine::~RenderEngine()
 	{
-		for (auto& m : m_MaterialCB)
+		for (RHI::Buffer::Ptr& m : m_MaterialCB)
 		{
 			m.Reset();
 		}
 
-		for (auto& m : m_ObjectCB)
+		for (RHI::Buffer::Ptr& m : m_ObjectCB)
 		{
 			m.Reset();
 		}
@@ -139,12 +139,12 @@ namespace cqe::Render
 		depthStencil.Reset();
 		m_PSO.Reset();
 
-		for (auto const& ro : m_RenderObjects)
+		for (RenderObject* renderObject : m_RenderObjects)
 		{
-			delete ro;
+			delete renderObject;
 		}
 
-		for (auto const& m : m_Materials)
+		for (Material* m : m_Materials)
 		{
 			delete m;
 		}

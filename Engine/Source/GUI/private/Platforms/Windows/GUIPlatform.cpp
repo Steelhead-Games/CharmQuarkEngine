@@ -48,7 +48,7 @@ namespace cqe
 				D3D12RenderBackend::Deinit(rhiContext);
 				break;
 			default:
-				assert(false && "Couldn't init the GUI");
+				assert(false && "Couldn't deinit the GUI");
 				break;
 			}
 		}
@@ -70,7 +70,7 @@ namespace cqe
 				D3D12RenderBackend::NewFrame();
 				break;
 			default:
-				assert(false && "Couldn't init the GUI");
+				assert(false && "Couldn't acquire the new frame");
 				break;
 			}
 		}
