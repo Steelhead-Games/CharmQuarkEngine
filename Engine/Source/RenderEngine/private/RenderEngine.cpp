@@ -125,14 +125,14 @@ namespace cqe::Render
 
 	RenderEngine::~RenderEngine()
 	{
-		for (RHI::Buffer::Ptr& m : m_MaterialCB)
+		for (RHI::Buffer::Ptr& material : m_MaterialCB)
 		{
-			m.Reset();
+			material.Reset();
 		}
 
-		for (RHI::Buffer::Ptr& m : m_ObjectCB)
+		for (RHI::Buffer::Ptr& constantBuffer : m_ObjectCB)
 		{
-			m.Reset();
+			constantBuffer.Reset();
 		}
 
 		m_Technique.Reset();
@@ -144,13 +144,12 @@ namespace cqe::Render
 			delete renderObject;
 		}
 
-		for (Material* m : m_Materials)
+		for (Material* material : m_Materials)
 		{
-			delete m;
+			delete material;
 		}
 
 		GUI::GUIContext::GetInstance()->DeinitRenderBackend(m_rhi);
-		m_rhi = nullptr;
 	}
 
 	void RenderEngine::Update(size_t frame)
