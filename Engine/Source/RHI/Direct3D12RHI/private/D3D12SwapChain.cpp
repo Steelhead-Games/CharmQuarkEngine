@@ -67,7 +67,7 @@ namespace cqe
 
 			D3D12Texture* d3d12BackBuffer = reinterpret_cast<D3D12Texture*>(m_BackBuffer[m_CurrentBackBufferIdx].Get());
 			D3D12CommandList* d3d12CommandList = reinterpret_cast<D3D12CommandList*>(commandList.Get());
-			
+
 			if (d3d12BackBuffer->GetCurrentState() != D3D12_RESOURCE_STATE_PRESENT)
 			{
 				D3D12_RESOURCE_BARRIER ResBarrierTransition = CD3DX12_RESOURCE_BARRIER::Transition(d3d12BackBuffer->GetHandle(),

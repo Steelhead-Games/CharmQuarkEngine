@@ -2,7 +2,6 @@
 #include <Debug/Assertions.h>
 #include <Geometry.h>
 #include <Debug/Console.h>
-#include <Debug/Console.h>
 #include <FileSystem.h>
 #include <Vector.h>
 #include <RHICommon.h>
@@ -62,6 +61,16 @@ namespace cqe
 
 		D3D12Context::~D3D12Context()
 		{
+			m_SwapChain.Reset();
+			m_Fence.Reset();
+			m_CommandQueue.Reset();
+			m_CommandList.Reset();
+			m_RtvHeap.Reset();
+			m_DsvHeap.Reset();
+			m_SrvCbvUavHeap.Reset();
+			m_SamplerHeap.Reset();
+			m_Factory.Reset();
+			m_Device.Reset();
 		}
 
 		Device::Ptr D3D12Context::GetDevice() const
@@ -336,13 +345,13 @@ namespace cqe
 			for (const Technique::InputLayoutDescription& inputLayoutDesc : inputLayout)
 			{
 				inputLayoutList.emplace_back(
-						inputLayoutDesc.SemanticName.c_str(),
-						inputLayoutDesc.Index,
-						ConvertToDXGIFormat(inputLayoutDesc.Format),
-						inputLayoutDesc.InputSlot,
-						byteOffset,
-						ConvertToD3D12InputClassification(inputLayoutDesc.InputSlotClass),
-						inputLayoutDesc.InstanceDataStepRate
+					inputLayoutDesc.SemanticName.c_str(),
+					inputLayoutDesc.Index,
+					ConvertToDXGIFormat(inputLayoutDesc.Format),
+					inputLayoutDesc.InputSlot,
+					byteOffset,
+					ConvertToD3D12InputClassification(inputLayoutDesc.InputSlotClass),
+					inputLayoutDesc.InstanceDataStepRate
 				);
 
 				byteOffset += GetFormatSize(inputLayoutDesc.Format);
@@ -407,7 +416,7 @@ namespace cqe
 
 		void D3D12Context::SetDescriptorHeaps()
 		{
-			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get()};
+			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get() };
 			m_CommandList->GetHandle()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 		}
 	}

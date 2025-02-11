@@ -29,7 +29,7 @@ namespace cqe
 	{
 		class GUI_API GUIContextPlatform final
 		{
-		public: 
+		public:
 			GUIContextPlatform() = delete;
 			GUIContextPlatform(GUIContextPlatform&) = delete;
 			GUIContextPlatform operator=(GUIContextPlatform&) = delete;
@@ -37,6 +37,7 @@ namespace cqe
 		public:
 			static void Init();
 			static void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
+			static void DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			static bool UpdateInput(Core::PackedVariables& arguments);
 			static void NewFrame();
 			static void Render(ImDrawData* drawData);

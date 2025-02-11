@@ -125,6 +125,20 @@ namespace cqe::Render
 
 	RenderEngine::~RenderEngine()
 	{
+		for (auto& m : m_MaterialCB)
+		{
+			m.Reset();
+		}
+
+		for (auto& m : m_ObjectCB)
+		{
+			m.Reset();
+		}
+
+		m_Technique.Reset();
+		depthStencil.Reset();
+		m_PSO.Reset();
+
 		for (auto const& ro : m_RenderObjects)
 		{
 			delete ro;
@@ -134,6 +148,9 @@ namespace cqe::Render
 		{
 			delete m;
 		}
+
+		GUI::GUIContext::GetInstance()->DeinitRenderBackend(m_rhi);
+		m_rhi = nullptr;
 	}
 
 	void RenderEngine::Update(size_t frame)
