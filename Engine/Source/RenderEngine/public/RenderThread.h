@@ -51,7 +51,7 @@ namespace cqe::Render
 
 		inline static std::jthread::id s_RenderThreadId;
 		inline static std::jthread::id s_MainThreadId;
-		std::jthread* m_Thread;
+		std::unique_ptr<std::jthread> m_Thread;
 		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
 		std::binary_semaphore m_RenderEngineIsReady{ 0 };
 

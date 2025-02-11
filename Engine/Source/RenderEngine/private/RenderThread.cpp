@@ -24,7 +24,7 @@ namespace cqe::Render
 
 		m_FrameMutexes[m_CurMainFrame].lock();
 
-		m_Thread = new std::jthread{ RunThisThread, this };
+		m_Thread = std::make_unique<std::jthread>(RunThisThread, this);
 		m_Thread->detach();
 	}
 
@@ -38,7 +38,6 @@ namespace cqe::Render
 
 		}
 
-		delete m_Thread;
 		delete m_RenderEngine;
 	}
 
