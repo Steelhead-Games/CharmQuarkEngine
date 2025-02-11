@@ -62,7 +62,7 @@ namespace cqe::Render
 
 		std::vector<RenderCommand*> m_commands[RenderCore::g_FrameBufferCount];
 
-		bool m_IsRunning = false;
-		std::atomic_bool m_IsRendering = false;
+		bool m_IsRunning : 1 = false;
+		bool m_IsRendering : 1 = false;
 	};
 }
