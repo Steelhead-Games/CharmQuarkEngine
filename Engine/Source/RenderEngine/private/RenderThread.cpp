@@ -23,6 +23,7 @@ namespace cqe::Render
 		s_MainThreadId = std::this_thread::get_id();
 
 		m_FrameMutexes[m_CurMainFrame].lock();
+
 		m_Thread = new std::jthread{ RunThisThread, this };
 		m_Thread->detach();
 	}
@@ -31,10 +32,12 @@ namespace cqe::Render
 	{
 		m_FrameMutexes[m_CurMainFrame].unlock();
 		m_IsRunning = false;
+
 		while (m_IsRendering)
 		{
 
 		}
+
 		delete m_Thread;
 		delete m_RenderEngine;
 	}
