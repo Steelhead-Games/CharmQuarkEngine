@@ -43,6 +43,7 @@ namespace cqe::Render
 		static bool IsRenderThread();
 
 		void WaitForRenderEngineToInit();
+		void WaitForRenderEngineToShutdown();
 
 	private:
 		void ProcessCommands();
@@ -54,6 +55,7 @@ namespace cqe::Render
 		std::unique_ptr<std::jthread> m_Thread;
 		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
 		std::binary_semaphore m_RenderEngineIsReady{ 0 };
+		std::binary_semaphore m_RenderEngineIsShutdown{ 0 };
 
 		RenderEngine* m_RenderEngine = nullptr;
 
@@ -63,6 +65,5 @@ namespace cqe::Render
 		std::vector<RenderCommand*> m_commands[RenderCore::g_FrameBufferCount];
 
 		bool m_IsRunning : 1 = false;
-		bool m_IsRendering : 1 = false;
 	};
 }

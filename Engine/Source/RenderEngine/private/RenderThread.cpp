@@ -30,14 +30,6 @@ namespace cqe::Render
 
 	RenderThread::~RenderThread()
 	{
-		m_FrameMutexes[m_CurMainFrame].unlock();
-		m_IsRunning = false;
-
-		while (m_IsRendering)
-		{
-
-		}
-
 		delete m_RenderEngine;
 	}
 
@@ -54,7 +46,6 @@ namespace cqe::Render
 
 		while (m_IsRunning)
 		{
-			m_IsRendering = true;
 			std::lock_guard<std::mutex> lock(m_FrameMutexes[m_CurrRenderFrame]);
 
 			ProcessCommands();
@@ -64,8 +55,9 @@ namespace cqe::Render
 			m_RenderEngine->OnEndFrame();
 
 			OnEndFrame();
-			m_IsRendering = false;
 		}
+
+		m_RenderEngineIsShutdown.release();
 	}
 
 	bool RenderThread::IsRenderThread()
@@ -143,5 +135,12 @@ namespace cqe::Render
 	void RenderThread::WaitForRenderEngineToInit()
 	{
 		m_RenderEngineIsReady.acquire();
+	}
+
+	void RenderThread::WaitForRenderEngineToShutdown()
+	{
+		m_IsRunning = false;
+		m_FrameMutexes[m_CurMainFrame].unlock();
+		m_RenderEngineIsShutdown.acquire();
 	}
 }
