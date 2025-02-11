@@ -115,8 +115,6 @@ namespace cqe::Render
 		SwitchFrame();
 	}
 
-	std::vector<int> locks;
-
 	void RenderThread::SwitchFrame()
 	{
 		if (IsRenderThread())
