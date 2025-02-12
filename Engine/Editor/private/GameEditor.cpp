@@ -73,6 +73,13 @@ namespace cqe
 			quit = !PlatformLoop();
 		}
 
+		delete Core::g_MainCamera;
+
+		for (GUI::UIWindow* window : m_UIWindows)
+		{
+			delete window;
+		}
+
 		m_renderThread->WaitForRenderEngineToShutdown();
 	}
 

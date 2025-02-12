@@ -71,7 +71,7 @@ namespace cqe::Render
 		switch (command)
 		{
 		case ERC::CreateRenderObject:
-			m_commands[m_CurMainFrame].push_back(
+			m_commands[m_CurMainFrame].emplace_back(
 				new EnqueuedRenderCommand(
 					[this](RenderCore::Geometry* geometry, RenderObject* renderObject) { m_RenderEngine->CreateRenderObject(geometry, renderObject); },
 					std::forward<Args>(args)...)
@@ -84,9 +84,8 @@ namespace cqe::Render
 
 		if (IsRenderThread())
 		{
-			RenderCommand* renderCommand = m_commands[m_CurMainFrame].back();
+			auto& renderCommand = m_commands[m_CurMainFrame].back();
 			renderCommand->DoTask();
-			delete renderCommand;
 			m_commands[m_CurMainFrame].pop_back();
 		}
 	}

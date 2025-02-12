@@ -62,7 +62,7 @@ namespace cqe::Render
 		size_t m_CurrRenderFrame = 0;
 		size_t m_CurMainFrame = 0;
 
-		std::vector<RenderCommand*> m_commands[RenderCore::g_FrameBufferCount];
+		std::vector<std::unique_ptr<RenderCommand>> m_commands[RenderCore::g_FrameBufferCount];
 
 		bool m_IsRunning : 1 = false;
 	};
