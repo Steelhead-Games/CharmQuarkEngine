@@ -5,7 +5,7 @@
 
 namespace cqe::Core
 {
-	InputHandler* InputHandler::m_Instance = nullptr;
+	std::unique_ptr<InputHandler> InputHandler::m_Instance = nullptr;
 
 	InputHandler::InputHandler()
 	{
@@ -16,10 +16,10 @@ namespace cqe::Core
 	{
 		if (m_Instance == nullptr) [[unlikely]]
 		{
-			m_Instance = new InputHandler();
+			m_Instance = std::unique_ptr<InputHandler>(new InputHandler());
 		}
 
-		return m_Instance;
+		return m_Instance.get();
 	}
 
 	void InputHandler::KeyPressed(KeyboardButton kb)
