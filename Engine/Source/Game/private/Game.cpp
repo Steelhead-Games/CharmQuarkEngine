@@ -50,6 +50,8 @@ namespace cqe
 			// The most common idea for such a loop is that it returns false when quit is required, or true otherwise
 			quit = !PlatformLoop();
 		}
+
+		m_renderThread->WaitForRenderEngineToShutdown();
 	}
 
 	void Game::Update(float dt)
