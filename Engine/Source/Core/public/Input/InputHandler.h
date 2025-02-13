@@ -19,9 +19,11 @@ namespace cqe::Core
 			float dy;
 		};
 
+
+		~InputHandler() = default;
+
 	private:
 		InputHandler();
-		~InputHandler() = default;
 
 	public:
 		static InputHandler* GetInstance();
@@ -47,6 +49,6 @@ namespace cqe::Core
 			MouseButtonCount
 		> m_PressedButtons;
 
-		static InputHandler* m_Instance;
+		static std::unique_ptr<InputHandler> m_Instance;
 	};
 }

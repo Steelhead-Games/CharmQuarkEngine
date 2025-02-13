@@ -50,8 +50,13 @@ namespace cqe
 					4, 0, 3,
 					4, 3, 7
 				};
-				
-				return new Geometry((Geometry::VertexType*)vertices.begin(), vertices.size(), (Geometry::IndexType*)indices.begin(), indices.size());
+
+				static std::unique_ptr<Geometry> geometry = std::make_unique<Geometry>(
+					(Geometry::VertexType*)vertices.begin(), (uint32_t)vertices.size(),
+					(Geometry::IndexType*)indices.begin(), (uint32_t)indices.size()
+				);
+
+				return geometry.get();
 			}
 		}
 	}
