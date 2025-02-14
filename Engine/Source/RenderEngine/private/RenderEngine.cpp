@@ -102,12 +102,18 @@ namespace cqe::Render
 			}
 		};
 
-		RHI::Technique::RootSignatureDescription rootSignature =
+		RHI::Technique::RootSignature rootSignature =
 		{
-			.Type = "BasicRootSignature",
-			.SlotIndex = 0,
-			.SpaceIndex = 0,
-			.IsConstantBuffer = true,
+			{
+				.SlotIndex = 0,
+				.SpaceIndex = 0,
+				.IsConstantBuffer = true
+			},
+			{
+				.SlotIndex = 1,
+				.SpaceIndex = 0,
+				.IsConstantBuffer = true
+			}
 		};
 
 		m_RenderPassResources->Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignature);
