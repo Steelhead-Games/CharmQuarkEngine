@@ -47,7 +47,7 @@ namespace cqe
 	{
 		assert(PlatformLoop != nullptr);
 
-		m_renderThread->WaitForRenderEngineToInit();
+		m_renderThread->WaitForRenderThread();
 
 		ImGui::SetCurrentContext(GUI::GUIContext::GetInstance()->GetImGuiContext());
 
@@ -73,14 +73,8 @@ namespace cqe
 			quit = !PlatformLoop();
 		}
 
-		delete Core::g_MainCamera;
-
-		for (GUI::UIWindow* window : m_UIWindows)
-		{
-			delete window;
-		}
-
-		m_renderThread->WaitForRenderEngineToShutdown();
+		m_renderThread->Stop();
+		m_renderThread->WaitForRenderThread();
 	}
 
 	void GameEditor::Update(float dt)

@@ -61,16 +61,6 @@ namespace cqe
 
 		D3D12Context::~D3D12Context()
 		{
-			m_SwapChain.Reset();
-			m_Fence.Reset();
-			m_CommandQueue.Reset();
-			m_CommandList.Reset();
-			m_RtvHeap.Reset();
-			m_DsvHeap.Reset();
-			m_SrvCbvUavHeap.Reset();
-			m_SamplerHeap.Reset();
-			m_Factory.Reset();
-			m_Device.Reset();
 		}
 
 		Device::Ptr D3D12Context::GetDevice() const
