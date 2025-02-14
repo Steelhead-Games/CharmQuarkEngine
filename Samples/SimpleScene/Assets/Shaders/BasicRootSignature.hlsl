@@ -1,0 +1,7 @@
+#define BasicRootSignature "RootFlags( ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT), " \
+			              "CBV(b0), " \
+			              "CBV(b1), " \
+			              "StaticSampler(s2)," \
+			              "StaticSampler(s3, " \
+			                             "addressU = TEXTURE_ADDRESS_CLAMP, " \
+			                             "filter = FILTER_MIN_MAG_MIP_LINEAR )"

@@ -93,21 +93,15 @@ namespace cqe::Render
 			}
 		};
 
-		RHI::Technique::RootSignature rootSignature =
+		RHI::Technique::RootSignatureDescription rootSignatureDescription =
 		{
-			{
-				.SlotIndex = 0,
-				.SpaceIndex = 0,
-				.IsConstantBuffer = true
-			},
-			{
-				.SlotIndex = 1,
-				.SpaceIndex = 0,
-				.IsConstantBuffer = true
-			}
+			.Type = "BasicRootSignature",
+			.SlotIndex = 0,
+			.SpaceIndex = 0,
+			.IsConstantBuffer = true,
 		};
 
-		m_Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignature);
+		m_Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignatureDescription);
 
 		RHI::PipelineStateObject::Description desc;
 		desc.Technique = m_Technique;

@@ -46,6 +46,7 @@ namespace cqe
 
 			struct RootSignatureDescription
 			{
+				std::string Type;
 				uint32_t SlotIndex;
 				uint32_t SpaceIndex;
 				bool IsConstantBuffer;
@@ -59,7 +60,7 @@ namespace cqe
 			Technique(
 				const ShaderInfo& shaderInfo,
 				const InputLayout& inputLayout,
-				const RootSignature& rootSignature
+				const RootSignatureDescription& rootSignature
 			)
 				: m_ShaderInfo(shaderInfo)
 				, m_InputLayout(inputLayout)
@@ -70,7 +71,7 @@ namespace cqe
 		protected:
 			ShaderInfo m_ShaderInfo;
 			InputLayout m_InputLayout;
-			RootSignature m_RootSignature;
+			RootSignatureDescription m_RootSignature;
 		};
 	}
 }
