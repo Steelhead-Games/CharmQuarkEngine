@@ -30,6 +30,7 @@ namespace cqe::Render
 
 	public:
 		void Run();
+		void Stop();
 
 		template<typename... Args>
 		void EnqueueCommand(ERC command, Args... args);
@@ -42,8 +43,7 @@ namespace cqe::Render
 
 		static bool IsRenderThread();
 
-		void WaitForRenderEngineToInit();
-		void WaitForRenderEngineToShutdown();
+		void WaitForRenderThread();
 
 	private:
 		void ProcessCommands();
@@ -54,8 +54,7 @@ namespace cqe::Render
 		inline static std::jthread::id s_MainThreadId;
 		std::unique_ptr<std::jthread> m_Thread;
 		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
-		std::binary_semaphore m_RenderEngineIsReady{ 0 };
-		std::binary_semaphore m_RenderEngineIsShutdown{ 0 };
+		std::barrier<> m_ThreadsSynchronizationBarrier;
 
 		RenderEngine* m_RenderEngine = nullptr;
 

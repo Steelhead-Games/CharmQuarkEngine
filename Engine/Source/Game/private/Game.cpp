@@ -31,7 +31,7 @@ namespace cqe
 
 		m_GameTimer.Reset();
 
-		m_renderThread->WaitForRenderEngineToInit();
+		m_renderThread->WaitForRenderThread();
 
 		Core::g_GUIWindowsCallback = [](Core::PackedVariables& packedVariables) { return GUI::GUIContext::GetInstance()->UpdateInput(packedVariables); };
 
@@ -51,7 +51,8 @@ namespace cqe
 			quit = !PlatformLoop();
 		}
 
-		m_renderThread->WaitForRenderEngineToShutdown();
+		m_renderThread->Stop();
+		m_renderThread->WaitForRenderThread();
 	}
 
 	void Game::Update(float dt)

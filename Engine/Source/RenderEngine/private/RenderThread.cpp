@@ -16,7 +16,7 @@ namespace
 
 namespace cqe::Render
 {
-	RenderThread::RenderThread()
+	RenderThread::RenderThread() : m_ThreadsSynchronizationBarrier{ 2 }
 	{
 		assert(m_CurMainFrame == 0);
 
@@ -40,7 +40,7 @@ namespace cqe::Render
 
 		m_RenderEngine = new RenderEngine();
 
-		m_RenderEngineIsReady.release();
+		m_ThreadsSynchronizationBarrier.arrive_and_drop();
 
 		m_IsRunning = true;
 
@@ -57,7 +57,13 @@ namespace cqe::Render
 			OnEndFrame();
 		}
 
-		m_RenderEngineIsShutdown.release();
+		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+	}
+
+	void RenderThread::Stop()
+	{
+		m_FrameMutexes[m_CurMainFrame].unlock();
+		m_IsRunning = false;
 	}
 
 	bool RenderThread::IsRenderThread()
@@ -132,15 +138,8 @@ namespace cqe::Render
 		return m_RenderEngine;
 	}
 
-	void RenderThread::WaitForRenderEngineToInit()
+	void RenderThread::WaitForRenderThread()
 	{
-		m_RenderEngineIsReady.acquire();
-	}
-
-	void RenderThread::WaitForRenderEngineToShutdown()
-	{
-		m_IsRunning = false;
-		m_FrameMutexes[m_CurMainFrame].unlock();
-		m_RenderEngineIsShutdown.acquire();
+		m_ThreadsSynchronizationBarrier.arrive_and_wait();
 	}
 }
