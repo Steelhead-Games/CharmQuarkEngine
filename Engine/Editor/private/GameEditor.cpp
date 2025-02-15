@@ -76,6 +76,7 @@ namespace cqe
 		m_renderThread->Stop();
 		m_renderThread->WaitForRenderThread();
 
+		GUI::GUIContext::GetInstance()->PlatformDeinit();
 		delete Core::g_MainCamera;
 
 		for (GUI::UIWindow* guiWindow : m_UIWindows)

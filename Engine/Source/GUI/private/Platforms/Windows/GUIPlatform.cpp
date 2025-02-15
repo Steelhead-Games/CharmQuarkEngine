@@ -14,10 +14,16 @@ namespace cqe
 {
 	namespace GUI
 	{
+		namespace
+		{
+			ImGuiContext* g_Context = nullptr;
+		}
+
 		void GUIContextPlatform::Init()
 		{
 			IMGUI_CHECKVERSION();
-			ImGui::CreateContext();
+			g_Context = ImGui::CreateContext();
+			ImGui::SetCurrentContext(g_Context);
 			ImGuiIO& io = ImGui::GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 			io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -25,6 +31,13 @@ namespace cqe
 			ImGui::StyleColorsDark();
 
 			ImGui_ImplWin32_Init(cqe::Core::g_MainWindowsApplication->GetWindowHandle());
+		}
+
+		void GUIContextPlatform::Deinit()
+		{
+			ImGui_ImplWin32_Shutdown();
+			D3D12RenderBackend::Deinit();
+			ImGui::DestroyContext(g_Context);
 		}
 
 		void GUIContextPlatform::InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)

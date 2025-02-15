@@ -9,14 +9,13 @@ namespace cqe::World
 {
 	class WORLD_API GameWorld final
 	{
-	private:
-		GameWorld();
-		~GameWorld() = default;
-
 	public:
 		static GameWorld* GetInstance();
 
 	public:
+		GameWorld();
+		~GameWorld() = default;
+
 		void LoadLevel(flecs::world& flecs, const std::string& levelPath);
 		const Level& GetCurrentLevel() const { assert(m_CurrentLevel.has_value()); return m_CurrentLevel.value(); }
 
@@ -29,6 +28,6 @@ namespace cqe::World
 
 		std::optional<Level> m_CurrentLevel = std::nullopt;
 
-		static GameWorld* m_Instance;
+		static std::unique_ptr<GameWorld> m_Instance;
 	};
 }

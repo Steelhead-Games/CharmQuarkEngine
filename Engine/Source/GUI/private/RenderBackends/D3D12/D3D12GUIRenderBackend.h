@@ -20,6 +20,7 @@ namespace cqe
 		public:
 			static void Init(Render::RHI::Context::Ptr rhiContext);
 			static void Deinit(Render::RHI::Context::Ptr rhiContext);
+			static void Deinit();
 			static void Render(ImDrawData* drawData);
 			static void NewFrame();
 		};

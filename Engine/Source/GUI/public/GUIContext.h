@@ -24,6 +24,7 @@ namespace cqe
 
 		public:
 			void PlatformInit();
+			void PlatformDeinit();
 			void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			void DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			bool UpdateInput(Core::PackedVariables& arguments);

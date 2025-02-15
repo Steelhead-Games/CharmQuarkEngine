@@ -9,21 +9,21 @@
 
 namespace cqe::GUI
 {
-	Render::RHI::Context::Ptr g_RHIContext = nullptr;
+	std::weak_ptr< Render::RHI::Context> g_RHIContext;
 
 	void SrvDescriptorAlloc(ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* out_cpu_handle, D3D12_GPU_DESCRIPTOR_HANDLE* out_gpu_handle)
 	{
-		assert(g_RHIContext.get());
+		assert(g_RHIContext.lock());
 
-		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.get());
+		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.lock().get());
 		d3d12RHI->GetSrvHeap()->Alloc(out_cpu_handle, out_gpu_handle);
 	}
 
 	void SrvDescriptorFree(ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE cpu_handle, D3D12_GPU_DESCRIPTOR_HANDLE gpu_handle)
 	{
-		assert(g_RHIContext.get());
+		assert(g_RHIContext.lock());
 
-		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.get());
+		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.lock().get());
 		d3d12RHI->GetSrvHeap()->Free(cpu_handle, gpu_handle);
 	}
 
@@ -31,7 +31,7 @@ namespace cqe::GUI
 	{
 		g_RHIContext = rhiContext;
 
-		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.get());
+		Render::RHI::D3D12Context* d3d12RHI = reinterpret_cast<Render::RHI::D3D12Context*>(g_RHIContext.lock().get());
 
 		ImGui_ImplDX12_InitInfo init_info = {};
 		init_info.Device = (ID3D12Device*)d3d12RHI->GetDevice()->GetNativeObject();
@@ -46,11 +46,17 @@ namespace cqe::GUI
 		ImGui_ImplDX12_Init(&init_info);
 	}
 
+	void D3D12RenderBackend::Deinit()
+	{
+		ImGui_ImplDX12_Shutdown();
+		//g_RHIContext = nullptr;
+	}
+
 	void D3D12RenderBackend::Deinit(Render::RHI::Context::Ptr rhiContext)
 	{
-		assert(rhiContext == g_RHIContext);
+		//assert(rhiContext == g_RHIContext);
 		ImGui_ImplDX12_Shutdown();
-		g_RHIContext = nullptr;
+		//g_RHIContext = nullptr;
 	}
 
 	void D3D12RenderBackend::NewFrame()
@@ -60,6 +66,6 @@ namespace cqe::GUI
 
 	void D3D12RenderBackend::Render(ImDrawData* drawData)
 	{
-		ImGui_ImplDX12_RenderDrawData(drawData, (ID3D12GraphicsCommandList*)g_RHIContext->GetCommandList()->GetNativeObject());
+		ImGui_ImplDX12_RenderDrawData(drawData, (ID3D12GraphicsCommandList*)g_RHIContext.lock()->GetCommandList()->GetNativeObject());
 	}
 }

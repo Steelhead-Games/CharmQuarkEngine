@@ -3,7 +3,7 @@
 
 namespace cqe::World
 {
-	GameWorld* GameWorld::m_Instance = nullptr;
+	std::unique_ptr<GameWorld> GameWorld::m_Instance = nullptr;
 
 	GameWorld::GameWorld()
 	{
@@ -14,10 +14,10 @@ namespace cqe::World
 	{
 		if (m_Instance == nullptr) [[unlikely]]
 		{
-			m_Instance = new GameWorld();
+			m_Instance = std::make_unique<GameWorld>();
 		}
 
-		return m_Instance;
+		return m_Instance.get();
 	}
 
 	void GameWorld::LoadLevel(flecs::world& world, const std::string& levelPath)

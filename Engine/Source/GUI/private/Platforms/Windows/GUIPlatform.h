@@ -36,6 +36,7 @@ namespace cqe
 
 		public:
 			static void Init();
+			static void Deinit();
 			static void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			static void DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			static bool UpdateInput(Core::PackedVariables& arguments);

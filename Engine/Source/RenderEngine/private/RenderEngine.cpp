@@ -136,7 +136,6 @@ namespace cqe::Render
 		}
 
 		g_RenderPassResources = nullptr;
-		GUI::GUIContext::GetInstance()->DeinitRenderBackend(m_rhi);
 	}
 
 	void RenderEngine::Update(size_t frame)

@@ -21,6 +21,13 @@ namespace cqe::GUI
 		GUIContextPlatform::Init();
 	}
 
+	void GUIContext::PlatformDeinit()
+	{
+		GUIContextPlatform::Deinit();
+
+		delete m_Instance;
+	}
+
 	void GUIContext::InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)
 	{
 		GUIContextPlatform::InitRenderBackend(rhiContext);
