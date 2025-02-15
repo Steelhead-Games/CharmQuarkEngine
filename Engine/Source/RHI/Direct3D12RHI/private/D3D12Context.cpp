@@ -284,22 +284,19 @@ namespace cqe
 		{
 			// Shaders
 			D3D12Technique::ShaderBlobList shaderBlobs;
-			std::unordered_map<std::string, RefCountPtr<ID3DBlob>> signatureBlobs;
 
 			for (const Technique::ShaderInfoDescription& shaderDesc : shaderInfo)
 			{
 				std::wstring shaderPath = Core::g_FileSystem->GetShaderPath(shaderDesc.ShaderFile);
 
-				auto shader = D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type));
+				RefCountPtr<ID3DBlob> shader = D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type));
 				shaderBlobs.emplace(shaderDesc.Type, shader);
-				signatureBlobs.emplace(shaderDesc.ShaderFile, shader);
 			}
-
 
 			// Root Signature
 			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
 			{
-				auto rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescriptor.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescriptor.Type + ".ihlsl"));
+				RefCountPtr<ID3DBlob> rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescriptor.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescriptor.Type + ".ihlsl"));
 
 				HRESULT hr = m_Device->GetHandle()->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&d3d12RootSignature));
 				assert(SUCCEEDED(hr));

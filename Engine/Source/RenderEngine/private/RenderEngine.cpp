@@ -95,10 +95,7 @@ namespace cqe::Render
 
 		RHI::Technique::RootSignatureDescription rootSignatureDescription =
 		{
-			.Type = "BasicRootSignature",
-			.SlotIndex = 0,
-			.SpaceIndex = 0,
-			.IsConstantBuffer = true,
+			.Type = "BasicRootSignature"
 		};
 
 		m_Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignatureDescription);
@@ -256,14 +253,14 @@ namespace cqe::Render
 				.initData = geometry->GetIndices()
 			});
 
-		m_Meshes.push_back(mesh);
+			m_Meshes.push_back(mesh);
 
-		Material::ID materialID = m_Materials.size();
-		Material* material = new Material(materialID);
-		m_Materials.push_back(material);
+			Material::ID materialID = m_Materials.size();
+			Material* material = new Material(materialID);
+			m_Materials.push_back(material);
 
-		renderObject->SetMeshID(meshID);
-		renderObject->SetMaterialID(materialID);
-		m_RenderObjects.push_back(renderObject);
+			renderObject->SetMeshID(meshID);
+			renderObject->SetMaterialID(materialID);
+			m_RenderObjects.push_back(renderObject);
 	}
 }

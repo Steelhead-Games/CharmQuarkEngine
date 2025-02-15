@@ -47,9 +47,6 @@ namespace cqe
 			struct RootSignatureDescription
 			{
 				std::string Type;
-				uint32_t SlotIndex;
-				uint32_t SpaceIndex;
-				bool IsConstantBuffer;
 			};
 			using RootSignature = std::vector<RootSignatureDescription>;
 
