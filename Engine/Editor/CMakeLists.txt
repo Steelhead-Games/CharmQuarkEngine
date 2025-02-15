@@ -97,4 +97,5 @@ target_precompile_headers(Editor
 		<variant>
 		<stack>
 		<semaphore>
+		<barrier>
 )

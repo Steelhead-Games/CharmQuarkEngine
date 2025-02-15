@@ -16,6 +16,7 @@ namespace cqe::Render
 	{
 	public:
 		RenderEngine();
+		~RenderEngine();
 
 		void Update(size_t frame);
 		void OnResize();

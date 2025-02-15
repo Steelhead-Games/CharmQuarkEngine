@@ -69,4 +69,5 @@ target_precompile_headers(${PROJECT_NAME}
 		<bitset>
 		<queue>
 		<semaphore>
+		<barrier>
 )

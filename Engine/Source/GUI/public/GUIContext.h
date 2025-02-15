@@ -25,6 +25,7 @@ namespace cqe
 		public:
 			void PlatformInit();
 			void InitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
+			void DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext);
 			bool UpdateInput(Core::PackedVariables& arguments);
 			bool IsUIHovered() const;
 			void UnFocus() const;

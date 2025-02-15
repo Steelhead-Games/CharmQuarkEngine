@@ -64,4 +64,5 @@ target_precompile_headers(RenderEngine
 		<variant>
 		<stack>
 		<semaphore>
+		<barrier>
 )

@@ -47,7 +47,7 @@ namespace cqe
 	{
 		assert(PlatformLoop != nullptr);
 
-		m_renderThread->WaitForRenderEngineToInit();
+		m_renderThread->WaitForRenderThread();
 
 		ImGui::SetCurrentContext(GUI::GUIContext::GetInstance()->GetImGuiContext());
 
@@ -72,6 +72,8 @@ namespace cqe
 			// The most common idea for such a loop is that it returns false when quit is required, or true otherwise
 			quit = !PlatformLoop();
 		}
+		m_renderThread->Stop();
+		m_renderThread->WaitForRenderThread();
 	}
 
 	void GameEditor::Update(float dt)
