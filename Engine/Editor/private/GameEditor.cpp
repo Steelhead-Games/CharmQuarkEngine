@@ -75,6 +75,13 @@ namespace cqe
 
 		m_renderThread->Stop();
 		m_renderThread->WaitForRenderThread();
+
+		delete Core::g_MainCamera;
+
+		for (GUI::UIWindow* guiWindow : m_UIWindows)
+		{
+			delete guiWindow;
+		}
 	}
 
 	void GameEditor::Update(float dt)
