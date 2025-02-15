@@ -44,14 +44,14 @@ namespace cqe::Render
 			std::vector<Material*> Materials;
 		};
 
-		std::unique_ptr<TemporalResources> m_RenderPassResources;
+		std::unique_ptr<TemporalResources> g_RenderPassResources;
 	}
 
 	RenderEngine::RenderEngine()
 	{
 		m_rhi = RHI::Helper::CreateRHI("D3D12");
 
-		m_RenderPassResources = std::make_unique<TemporalResources>();
+		g_RenderPassResources = std::make_unique<TemporalResources>();
 
 		OnResize();
 
@@ -59,7 +59,7 @@ namespace cqe::Render
 
 		for (int i = 0; i < RenderCore::g_FrameBufferCount; ++i)
 		{
-			m_RenderPassResources->ObjectCB[i] = m_rhi->CreateBuffer(
+			g_RenderPassResources->ObjectCB[i] = m_rhi->CreateBuffer(
 				{
 					.Count = RenderCore::g_MaximumRenderObjectCount,
 					.ElementSize = sizeof(TemporalResources::ObjectConstants),
@@ -67,7 +67,7 @@ namespace cqe::Render
 				}
 			);
 
-			m_RenderPassResources->MaterialCB[i] = m_rhi->CreateBuffer(
+			g_RenderPassResources->MaterialCB[i] = m_rhi->CreateBuffer(
 				{
 					.Count = RenderCore::g_MaximumRenderObjectCount,
 					.ElementSize = sizeof(TemporalResources::MaterialConstants),
@@ -116,15 +116,15 @@ namespace cqe::Render
 			}
 		};
 
-		m_RenderPassResources->Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignature);
+		g_RenderPassResources->Technique = m_rhi->CreateTechnique(shaderInfo, inputLayout, rootSignature);
 
 		RHI::PipelineStateObject::Description desc;
-		desc.Technique = m_RenderPassResources->Technique;
+		desc.Technique = g_RenderPassResources->Technique;
 		desc.NumRenderTargets = 1;
 		desc.RTVFormats[0] = m_rhi->GetSwapChain()->GetCurrentBackBuffer()->GetFormat();
-		desc.DSVFormat = m_RenderPassResources->DepthStencil->GetFormat();
+		desc.DSVFormat = g_RenderPassResources->DepthStencil->GetFormat();
 
-		m_RenderPassResources->PSO = m_rhi->CreatePSO(desc);
+		g_RenderPassResources->PSO = m_rhi->CreatePSO(desc);
 
 		m_rhi->GetCommandList()->Close();
 		m_rhi->GetCommandQueue()->ExecuteCommandLists({ m_rhi->GetCommandList() });
@@ -139,12 +139,12 @@ namespace cqe::Render
 			delete renderObject;
 		}
 
-		for (Material* material : m_RenderPassResources->Materials)
+		for (Material* material : g_RenderPassResources->Materials)
 		{
 			delete material;
 		}
 
-		m_RenderPassResources = nullptr;
+		g_RenderPassResources = nullptr;
 		GUI::GUIContext::GetInstance()->DeinitRenderBackend(m_rhi);
 	}
 
@@ -158,7 +158,7 @@ namespace cqe::Render
 
 		OnResize();
 
-		m_rhi->GetCommandList()->SetPipelineStateObject(m_RenderPassResources->PSO);
+		m_rhi->GetCommandList()->SetPipelineStateObject(g_RenderPassResources->PSO);
 
 		RHI::Rect scissorRect(0, Core::g_MainWindowsApplication->GetWidth(), 0, Core::g_MainWindowsApplication->GetHeight());
 
@@ -172,11 +172,11 @@ namespace cqe::Render
 		m_rhi->GetCommandList()->SetScissorRect(scissorRect);
 
 		m_rhi->GetCommandList()->ClearRenderTarget(m_rhi->GetSwapChain()->GetCurrentBackBuffer(), RenderCore::Colors::LightSteelBlue);
-		m_rhi->GetCommandList()->ClearDepthStencilView(m_RenderPassResources->DepthStencil, RHI::ClearFlags::Depth | RHI::ClearFlags::Stencil, 1.0f, 0);
+		m_rhi->GetCommandList()->ClearDepthStencilView(g_RenderPassResources->DepthStencil, RHI::ClearFlags::Depth | RHI::ClearFlags::Stencil, 1.0f, 0);
 
-		m_rhi->GetCommandList()->SetRenderTargets(1, m_rhi->GetSwapChain()->GetCurrentBackBuffer(), m_RenderPassResources->DepthStencil);
+		m_rhi->GetCommandList()->SetRenderTargets(1, m_rhi->GetSwapChain()->GetCurrentBackBuffer(), g_RenderPassResources->DepthStencil);
 
-		m_rhi->GetCommandList()->SetTechnique(m_RenderPassResources->Technique);
+		m_rhi->GetCommandList()->SetTechnique(g_RenderPassResources->Technique);
 
 		for (RenderObject* renderObject : m_RenderObjects)
 		{
@@ -187,10 +187,10 @@ namespace cqe::Render
 			Material::ID materialID = renderObject->GetMaterialID();
 
 			assert(meshID >= 0);
-			assert(meshID < m_RenderPassResources->Meshes.size());
+			assert(meshID < g_RenderPassResources->Meshes.size());
 			assert(meshID != RenderObject::k_invalidMeshID);
 			assert(materialID >= 0);
-			assert(materialID < m_RenderPassResources->Materials.size());
+			assert(materialID < g_RenderPassResources->Materials.size());
 			assert(materialID != RenderObject::k_invalidMaterialID);
 
 			// Projection and view matrices should be a part of Camera class
@@ -206,21 +206,21 @@ namespace cqe::Render
 
 			TemporalResources::ObjectConstants objConstants;
 			objConstants.WorldViewProj = worldViewProj.Transpose();
-			m_RenderPassResources->ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()]->CopyData(meshID, &objConstants, sizeof(TemporalResources::ObjectConstants));
+			g_RenderPassResources->ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()]->CopyData(meshID, &objConstants, sizeof(TemporalResources::ObjectConstants));
 
-			Material* material = m_RenderPassResources->Materials[materialID];
+			Material* material = g_RenderPassResources->Materials[materialID];
 			TemporalResources::MaterialConstants matConstants;
 			matConstants.Color = material->GetAlbedo();
-			m_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()]->CopyData(materialID, &matConstants, sizeof(TemporalResources::MaterialConstants));
+			g_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()]->CopyData(materialID, &matConstants, sizeof(TemporalResources::MaterialConstants));
 
-			m_rhi->GetCommandList()->SetMesh(m_RenderPassResources->Meshes[meshID]);
+			m_rhi->GetCommandList()->SetMesh(g_RenderPassResources->Meshes[meshID]);
 			m_rhi->GetCommandList()->SetPrimitiveTopology(RHI::PrimitiveTopology::TriangleList);
 
-			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(0, m_RenderPassResources->ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], meshID);
-			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, m_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
+			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(0, g_RenderPassResources->ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], meshID);
+			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, g_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
 
 			m_rhi->GetCommandList()->DrawIndexedInstanced(
-				m_RenderPassResources->Meshes[meshID]->GetIndexBuffer()->GetDesc().Count,
+				g_RenderPassResources->Meshes[meshID]->GetIndexBuffer()->GetDesc().Count,
 				1, 0, 0, 0);
 		}
 	}
@@ -254,7 +254,7 @@ namespace cqe::Render
 				Core::g_MainWindowsApplication->GetHeight()
 			);
 
-			m_RenderPassResources->DepthStencil.Reset();
+			g_RenderPassResources->DepthStencil.Reset();
 
 			RHI::Texture::Description description;
 			description.Dimension = RHI::Texture::Dimensions::Two;
@@ -263,7 +263,7 @@ namespace cqe::Render
 			description.Format = RHI::ResourceFormat::D24S8;
 			description.Flags = RHI::Texture::UsageFlags::DepthStencil;
 
-			m_RenderPassResources->DepthStencil = m_rhi->CreateTexture(description);
+			g_RenderPassResources->DepthStencil = m_rhi->CreateTexture(description);
 
 			m_rhi->GetFence()->Sync(m_rhi->GetCommandQueue());
 		}
@@ -274,7 +274,7 @@ namespace cqe::Render
 		assert(geometry);
 		assert(renderObject);
 
-		RHI::Mesh::ID meshID = m_RenderPassResources->Meshes.size();
+		RHI::Mesh::ID meshID = g_RenderPassResources->Meshes.size();
 		RHI::Mesh* mesh = m_rhi->CreateMesh(
 			{
 				.Count = geometry->GetVertexCount(),
@@ -287,11 +287,11 @@ namespace cqe::Render
 				.initData = geometry->GetIndices()
 			});
 
-			m_RenderPassResources->Meshes.push_back(mesh);
+			g_RenderPassResources->Meshes.push_back(mesh);
 
-			Material::ID materialID = m_RenderPassResources->Materials.size();
+			Material::ID materialID = g_RenderPassResources->Materials.size();
 			Material* material = new Material(materialID);
-			m_RenderPassResources->Materials.push_back(material);
+			g_RenderPassResources->Materials.push_back(material);
 
 			renderObject->SetMeshID(meshID);
 			renderObject->SetMaterialID(materialID);
