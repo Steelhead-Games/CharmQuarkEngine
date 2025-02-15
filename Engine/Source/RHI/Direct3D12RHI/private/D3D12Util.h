@@ -39,7 +39,9 @@ namespace cqe
 					entrypoint.c_str(), target.c_str(), compileFlags, 0, &byteCode, &errors);
 
 				if (errors != nullptr)
+				{
 					OutputDebugStringA((char*)errors->GetBufferPointer());
+				}
 
 				assert(SUCCEEDED(hr));
 
@@ -65,7 +67,9 @@ namespace cqe
 					entrypoint.c_str(), target.c_str(), compileFlags, 0, &byteCode, &errors);
 
 				if (errors != nullptr)
+				{
 					OutputDebugStringA((char*)errors->GetBufferPointer());
+				}
 
 				assert(SUCCEEDED(hr));
 
@@ -83,7 +87,9 @@ namespace cqe
 					hr = D3DCompileFromFile(filename.c_str(), nullptr, nullptr,
 						type.c_str(), "rootsig_1_0", 0, 0, &byteCode, &errors);
 					if (errors != nullptr)
+					{
 						OutputDebugStringA((char*)errors->GetBufferPointer());
+					}
 
 					assert(SUCCEEDED(hr));
 					errors = nullptr;
@@ -92,7 +98,9 @@ namespace cqe
 				hr = D3DGetBlobPart(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), D3D_BLOB_ROOT_SIGNATURE, 0, &byteCode);
 
 				if (errors != nullptr)
+				{
 					OutputDebugStringA((char*)errors->GetBufferPointer());
+				}
 
 				assert(SUCCEEDED(hr));
 
