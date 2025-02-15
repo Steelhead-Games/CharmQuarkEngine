@@ -79,4 +79,5 @@ target_precompile_headers(Game
 		<queue>
 		<stack>
 		<semaphore>
+		<barrier>
 )

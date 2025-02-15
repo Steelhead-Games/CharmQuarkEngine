@@ -2,7 +2,6 @@
 #include <Debug/Assertions.h>
 #include <Geometry.h>
 #include <Debug/Console.h>
-#include <Debug/Console.h>
 #include <FileSystem.h>
 #include <Vector.h>
 #include <RHICommon.h>

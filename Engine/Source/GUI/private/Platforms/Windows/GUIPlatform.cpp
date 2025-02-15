@@ -40,6 +40,19 @@ namespace cqe
 			}
 		}
 
+		void GUIContextPlatform::DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)
+		{
+			switch (Render::RHI::Helper::GetRHIType())
+			{
+			case Render::RHI::Type::D3D12:
+				D3D12RenderBackend::Deinit(rhiContext);
+				break;
+			default:
+				assert(false && "Couldn't deinit the GUI");
+				break;
+			}
+		}
+
 		bool GUIContextPlatform::UpdateInput(Core::PackedVariables& arguments)
 		{
 			HWND hWnd; UINT msg; WPARAM wParam; LPARAM lParam;
@@ -57,7 +70,7 @@ namespace cqe
 				D3D12RenderBackend::NewFrame();
 				break;
 			default:
-				assert(false && "Couldn't init the GUI");
+				assert(false && "Couldn't acquire the new frame");
 				break;
 			}
 		}
