@@ -299,7 +299,7 @@ namespace cqe
 			// Root Signature
 			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
 			{
-				auto rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescriptor.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescriptor.Type + ".hlsl"));
+				auto rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescriptor.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescriptor.Type + ".ihlsl"));
 
 				HRESULT hr = m_Device->GetHandle()->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&d3d12RootSignature));
 				assert(SUCCEEDED(hr));

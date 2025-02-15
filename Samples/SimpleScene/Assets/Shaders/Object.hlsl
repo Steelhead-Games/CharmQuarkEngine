@@ -1,4 +1,4 @@
-#include "BasicRootSignature.hlsl"
+#include "BasicRootSignature.ihlsl"
 
 cbuffer cbPerObject : register(b0)
 {
