@@ -27,7 +27,7 @@ namespace cqe
 				assert(SUCCEEDED(hr));
 			}
 
-			if (!IsSupported())
+			if (!CheckCompatibility())
 			{
 				ASSERT_NOT_IMPLEMENTED;
 			}
@@ -43,7 +43,7 @@ namespace cqe
 			return m_NativeDevice;
 		}
 
-		bool D3D12Device::IsSupported() const
+		bool D3D12Device::CheckCompatibility() const
 		{
 			D3D_FEATURE_LEVEL levels[] =
 			{
