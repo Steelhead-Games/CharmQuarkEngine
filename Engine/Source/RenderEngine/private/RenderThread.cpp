@@ -16,7 +16,7 @@ namespace
 
 namespace cqe::Render
 {
-	RenderThread::RenderThread() : m_ThreadsSynchronizationBarrier{ 2 }
+	RenderThread::RenderThread()
 	{
 		assert(m_CurMainFrame == 0);
 
