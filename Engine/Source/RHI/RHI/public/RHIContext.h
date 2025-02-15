@@ -41,7 +41,7 @@ namespace cqe
 			virtual Technique::Ptr CreateTechnique(
 				const Technique::ShaderInfo& shaderInfo,
 				const Technique::InputLayout& inputLayout,
-				const Technique::RootSignature& rootSignature
+				const Technique::RootSignatureDescription& rootSignatureDescription
 			) = 0;
 			virtual PipelineStateObject::Ptr CreatePSO(const PipelineStateObject::Description& description) = 0;
 			virtual Mesh::Ptr CreateMesh(

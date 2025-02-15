@@ -7,11 +7,11 @@ namespace cqe
 		D3D12Technique::D3D12Technique(
 			const ShaderInfo& shaderInfo,
 			const InputLayout& inputLayout,
-			const RootSignature& rootSignature,
+			const RootSignatureDescription& rootSignature,
 			RefCountPtr<ID3D12RootSignature> d3d12RootSiungature,
 			ShaderBlobList&& shaderBlobList,
 			InputLayoutList&& inputLayoutList
-		) 
+		)
 			: Technique(shaderInfo, inputLayout, rootSignature)
 			, m_d3d12RootSignature(d3d12RootSiungature)
 			, m_ShaderBlobList(std::move(shaderBlobList))

@@ -54,7 +54,7 @@ namespace cqe::Render
 		inline static std::jthread::id s_MainThreadId;
 		std::unique_ptr<std::jthread> m_Thread;
 		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
-		std::barrier<> m_ThreadsSynchronizationBarrier;
+		std::barrier<> m_ThreadsSynchronizationBarrier{ 2 };
 
 		RenderEngine* m_RenderEngine = nullptr;
 

@@ -278,47 +278,9 @@ namespace cqe
 		Technique::Ptr D3D12Context::CreateTechnique(
 			const Technique::ShaderInfo& shaderInfo,
 			const Technique::InputLayout& inputLayout,
-			const Technique::RootSignature& rootSignature
+			const Technique::RootSignatureDescription& rootSignatureDescription
 		)
 		{
-			// Root Signature
-			CD3DX12_ROOT_PARAMETER* slotRootParameter = new CD3DX12_ROOT_PARAMETER[rootSignature.size()];
-
-			for (uint64_t rootSigIdx = 0; rootSigIdx < rootSignature.size(); ++rootSigIdx)
-			{
-				if (rootSignature[rootSigIdx].IsConstantBuffer)
-				{
-					slotRootParameter[rootSigIdx].InitAsConstantBufferView(rootSignature[rootSigIdx].SlotIndex, rootSignature[rootSigIdx].SpaceIndex);
-				}
-				else
-				{
-					ASSERT_NOT_IMPLEMENTED;
-				}
-			}
-
-			CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(rootSignature.size(), slotRootParameter, 0, nullptr,
-				D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-			RefCountPtr<ID3DBlob> serializedRootSig = nullptr;
-			RefCountPtr<ID3DBlob> errorBlob = nullptr;
-			HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-				serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
-
-			if (errorBlob != nullptr)
-			{
-				Core::Console::PrintDebug((char*)errorBlob->GetBufferPointer());
-			}
-			assert(SUCCEEDED(hr));
-
-			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
-			hr = m_Device->GetHandle()->CreateRootSignature(
-				0,
-				serializedRootSig->GetBufferPointer(),
-				serializedRootSig->GetBufferSize(),
-				IID_PPV_ARGS(&d3d12RootSignature));
-
-			assert(SUCCEEDED(hr));
-
 			// Shaders
 			D3D12Technique::ShaderBlobList shaderBlobs;
 
@@ -326,7 +288,17 @@ namespace cqe
 			{
 				std::wstring shaderPath = Core::g_FileSystem->GetShaderPath(shaderDesc.ShaderFile);
 
-				shaderBlobs.emplace(shaderDesc.Type, D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type)));
+				RefCountPtr<ID3DBlob> shader = D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type));
+				shaderBlobs.emplace(shaderDesc.Type, shader);
+			}
+
+			// Root Signature
+			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
+			{
+				RefCountPtr<ID3DBlob> rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescription.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescription.Type + ".ihlsl"));
+
+				HRESULT hr = m_Device->GetHandle()->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&d3d12RootSignature));
+				assert(SUCCEEDED(hr));
 			}
 
 			// Input Layout
@@ -347,7 +319,7 @@ namespace cqe
 				byteOffset += GetFormatSize(inputLayoutDesc.Format);
 			}
 
-			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignature, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
+			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignatureDescription, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
 		}
 
 		PipelineStateObject::Ptr D3D12Context::CreatePSO(const PipelineStateObject::Description& description)
