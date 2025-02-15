@@ -22,6 +22,7 @@ namespace cqe
 		public:
 			virtual RenderNativeObject GetNativeObject() override;
 			RefCountPtr<ID3D12Device> GetHandle() const;
+			bool IsSupported() const;
 
 		private:
 			RefCountPtr<ID3D12Device> m_NativeDevice = nullptr;
