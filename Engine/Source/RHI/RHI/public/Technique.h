@@ -57,18 +57,18 @@ namespace cqe
 			Technique(
 				const ShaderInfo& shaderInfo,
 				const InputLayout& inputLayout,
-				const RootSignatureDescription& rootSignature
+				const RootSignatureDescription& rootSignatureDescription
 			)
 				: m_ShaderInfo(shaderInfo)
 				, m_InputLayout(inputLayout)
-				, m_RootSignature(rootSignature)
+				, m_RootSignatureDescription(rootSignatureDescription)
 			{
 			}
 
 		protected:
 			ShaderInfo m_ShaderInfo;
 			InputLayout m_InputLayout;
-			RootSignatureDescription m_RootSignature;
+			RootSignatureDescription m_RootSignatureDescription;
 		};
 	}
 }

@@ -279,7 +279,7 @@ namespace cqe
 		Technique::Ptr D3D12Context::CreateTechnique(
 			const Technique::ShaderInfo& shaderInfo,
 			const Technique::InputLayout& inputLayout,
-			const Technique::RootSignatureDescription& rootSignatureDescriptor
+			const Technique::RootSignatureDescription& rootSignatureDescription
 		)
 		{
 			// Shaders
@@ -296,7 +296,7 @@ namespace cqe
 			// Root Signature
 			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
 			{
-				RefCountPtr<ID3DBlob> rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescriptor.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescriptor.Type + ".ihlsl"));
+				RefCountPtr<ID3DBlob> rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescription.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescription.Type + ".ihlsl"));
 
 				HRESULT hr = m_Device->GetHandle()->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&d3d12RootSignature));
 				assert(SUCCEEDED(hr));
@@ -320,7 +320,7 @@ namespace cqe
 				byteOffset += GetFormatSize(inputLayoutDesc.Format);
 			}
 
-			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignatureDescriptor, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
+			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignatureDescription, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
 		}
 
 		PipelineStateObject::Ptr D3D12Context::CreatePSO(const PipelineStateObject::Description& description)
