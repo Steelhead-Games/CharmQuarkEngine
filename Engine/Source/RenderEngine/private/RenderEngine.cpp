@@ -51,7 +51,7 @@ namespace cqe::Render
 	{
 		m_rhi = RHI::Helper::CreateRHI("D3D12");
 
-		if (!m_rhi->CheckMinimalRequirements())
+		if (auto minimalRequirementsMet = m_rhi->CheckMinimalRequirements(); !minimalRequirementsMet)
 		{
 			ASSERT_NOT_IMPLEMENTED;
 		}
