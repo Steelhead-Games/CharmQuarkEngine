@@ -49,6 +49,7 @@ namespace cqe
 				const Mesh::IndexBufferDescription& indexDesc
 			) = 0;
 			virtual void SetDescriptorHeaps() = 0;
+			virtual bool CheckMinimalRequirements() const = 0;
 
 		public:
 			virtual Device::Ptr GetDevice() const = 0;
