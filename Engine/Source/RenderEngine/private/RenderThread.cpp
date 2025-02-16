@@ -24,6 +24,15 @@ namespace cqe::Render
 
 		m_FrameMutexes[m_CurMainFrame].lock();
 
+		auto func = []() noexcept
+			{
+				int f = 0;
+			};
+
+		auto p = new std::barrier{ 2, func };
+
+		m_ThreadsSynchronizationBarrier = std::unique_ptr<std::barrier<>>{ new std::barrier<>(1) };
+
 		m_Thread = std::make_unique<std::jthread>(RunThisThread, this);
 		m_Thread->detach();
 	}
@@ -40,7 +49,7 @@ namespace cqe::Render
 
 		m_RenderEngine = new RenderEngine();
 
-		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+		m_ThreadsSynchronizationBarrier->arrive_and_drop();
 
 		m_IsRunning = true;
 
@@ -57,7 +66,7 @@ namespace cqe::Render
 			OnEndFrame();
 		}
 
-		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+		m_ThreadsSynchronizationBarrier->arrive_and_drop();
 	}
 
 	void RenderThread::Stop()
@@ -139,6 +148,7 @@ namespace cqe::Render
 
 	void RenderThread::WaitForRenderThread()
 	{
-		m_ThreadsSynchronizationBarrier.arrive_and_wait();
+		m_ThreadsSynchronizationBarrier->arrive_and_wait();
+		m_ThreadsSynchronizationBarrier = std::unique_ptr<std::barrier<>>{ new std::barrier<>(1) };
 	}
 }

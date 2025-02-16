@@ -72,17 +72,8 @@ namespace cqe
 			// The most common idea for such a loop is that it returns false when quit is required, or true otherwise
 			quit = !PlatformLoop();
 		}
-
 		m_renderThread->Stop();
 		m_renderThread->WaitForRenderThread();
-
-		GUI::GUIContext::GetInstance()->PlatformDeinit();
-		delete Core::g_MainCamera;
-
-		for (GUI::UIWindow* guiWindow : m_UIWindows)
-		{
-			delete guiWindow;
-		}
 	}
 
 	void GameEditor::Update(float dt)

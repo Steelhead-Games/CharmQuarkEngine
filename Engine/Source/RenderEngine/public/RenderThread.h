@@ -5,6 +5,8 @@
 #include <RenderCore.h>
 #include <Threads.h>
 
+#include <functional>
+
 namespace cqe::Render
 {
 	namespace RHI
@@ -50,11 +52,12 @@ namespace cqe::Render
 		void SwitchFrame();
 		size_t GetNextFrame(size_t frameNumber) const;
 
+
 		inline static std::jthread::id s_RenderThreadId;
 		inline static std::jthread::id s_MainThreadId;
 		std::unique_ptr<std::jthread> m_Thread;
 		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
-		std::barrier<> m_ThreadsSynchronizationBarrier{ 2 };
+		std::unique_ptr<std::barrier<>> m_ThreadsSynchronizationBarrier;
 
 		RenderEngine* m_RenderEngine = nullptr;
 
