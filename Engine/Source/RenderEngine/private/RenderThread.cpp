@@ -40,7 +40,7 @@ namespace cqe::Render
 
 		m_RenderEngine = new RenderEngine();
 
-		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+		m_ThreadsSynchronizationBarrier.arrive_and_wait();
 
 		m_IsRunning = true;
 
@@ -57,7 +57,7 @@ namespace cqe::Render
 			OnEndFrame();
 		}
 
-		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+		m_ThreadsSynchronizationBarrier.arrive_and_wait();
 	}
 
 	void RenderThread::Stop()
