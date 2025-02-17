@@ -4,31 +4,26 @@
 
 namespace cqe::Render
 {
-	class RENDER_ENGINE_API RenderCommand
+	class RENDER_ENGINE_API RenderCommand final
 	{
 	public:
-		virtual void DoTask() = 0;
-	};
+		using Task = std::function<void()>;
+		using Ptr = std::unique_ptr<RenderCommand>;
 
-	template<typename LAMBDA, typename... Args>
-	class RENDER_ENGINE_API EnqueuedRenderCommand final : public RenderCommand
-	{
 	public:
-		EnqueuedRenderCommand() = delete;
+		RenderCommand() = delete;
 
-		EnqueuedRenderCommand(LAMBDA&& InLambda, Args... args) :
-			lambda(std::forward<LAMBDA>(InLambda)),
-			arguments(std::forward<Args>(args)...)
+		RenderCommand(Task&& renderTask) :
+			m_Task(std::forward<Task>(renderTask))
 		{
 		}
 
-		virtual void DoTask() override
+		void DoTask()
 		{
-			std::apply(lambda, arguments);
+			m_Task();
 		}
 
 	private:
-		LAMBDA lambda;
-		std::tuple<Args...> arguments;
+		Task m_Task;
 	};
 }

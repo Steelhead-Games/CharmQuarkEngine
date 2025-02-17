@@ -147,8 +147,6 @@ namespace cqe::Render
 
 		m_rhi->SetDescriptorHeaps();
 
-		OnResize();
-
 		m_rhi->GetCommandList()->SetPipelineStateObject(g_RenderPassResources->PSO);
 
 		RHI::Rect scissorRect(0, Core::g_MainWindowsApplication->GetWidth(), 0, Core::g_MainWindowsApplication->GetHeight());
@@ -232,6 +230,8 @@ namespace cqe::Render
 
 	void RenderEngine::OnResize()
 	{
+		assert(RenderThread::IsRenderThread());
+
 		if (m_rhi->GetSwapChain()->GetCurrentBackBuffer()->GetWidth() != Core::g_MainWindowsApplication->GetWidth() ||
 			m_rhi->GetSwapChain()->GetCurrentBackBuffer()->GetHeight() != Core::g_MainWindowsApplication->GetHeight()) [[unlikely]]
 		{
@@ -264,6 +264,7 @@ namespace cqe::Render
 	{
 		assert(geometry);
 		assert(renderObject);
+		assert(RenderThread::IsRenderThread());
 
 		RHI::Mesh::ID meshID = g_RenderPassResources->Meshes.size();
 		RHI::Mesh* mesh = m_rhi->CreateMesh(
