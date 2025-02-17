@@ -63,6 +63,34 @@ namespace cqe
 		{
 		}
 
+		bool D3D12Context::CheckMinimalRequirements() const
+		{
+			D3D_FEATURE_LEVEL levels[] =
+			{
+				D3D_FEATURE_LEVEL_12_2,
+				D3D_FEATURE_LEVEL_12_1,
+			};
+			D3D12_FEATURE_DATA_FEATURE_LEVELS supportedLevels;
+			supportedLevels.NumFeatureLevels = sizeof(levels) / sizeof(D3D_FEATURE_LEVEL);
+			supportedLevels.pFeatureLevelsRequested = levels;
+			m_Device->GetHandle()->CheckFeatureSupport(
+				D3D12_FEATURE_FEATURE_LEVELS,
+				&supportedLevels,
+				sizeof(D3D12_FEATURE_DATA_FEATURE_LEVELS)
+			);
+
+			D3D12_FEATURE_DATA_SHADER_MODEL shaderModelFeature{ .HighestShaderModel = D3D_SHADER_MODEL_6_6 };
+			HRESULT hr = m_Device->GetHandle()->CheckFeatureSupport(
+				D3D12_FEATURE_SHADER_MODEL,
+				&shaderModelFeature,
+				sizeof(D3D12_FEATURE_DATA_SHADER_MODEL)
+			);
+			assert(SUCCEEDED(hr));
+
+			return shaderModelFeature.HighestShaderModel >= D3D_SHADER_MODEL_6_6
+				&& supportedLevels.MaxSupportedFeatureLevel >= D3D_FEATURE_LEVEL_12_1;
+		}
+
 		Device::Ptr D3D12Context::GetDevice() const
 		{
 			return m_Device;

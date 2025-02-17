@@ -51,6 +51,11 @@ namespace cqe::Render
 	{
 		m_rhi = RHI::Helper::CreateRHI("D3D12");
 
+		if (bool minimalRequirementsMet = m_rhi->CheckMinimalRequirements(); !minimalRequirementsMet)
+		{
+			ASSERT_NOT_IMPLEMENTED;
+		}
+
 		g_RenderPassResources = std::make_unique<TemporalResources>();
 
 		OnResize();

@@ -39,6 +39,7 @@ namespace cqe
 				const Mesh::IndexBufferDescription& indexDesc
 			) override;
 			virtual void SetDescriptorHeaps() override;
+			virtual bool CheckMinimalRequirements() const override;
 
 		public:
 			virtual Device::Ptr GetDevice() const override;
