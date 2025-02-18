@@ -1,4 +1,3 @@
-#include <RenderCommands.h>
 #include <RenderEngine.h>
 #include <RenderThread.h>
 
@@ -71,40 +70,25 @@ namespace cqe::Render
 		return s_RenderThreadId == std::this_thread::get_id();
 	}
 
-	template<typename... Args>
-	void RenderThread::EnqueueCommand(ERC command, Args... args)
+	void RenderThread::EnqueueCommand(RenderCommand::Task task)
 	{
-		switch (command)
-		{
-		case ERC::CreateRenderObject:
-			m_commands[m_CurMainFrame].push_back(
-				new EnqueuedRenderCommand(
-					[this](RenderCore::Geometry* geometry, RenderObject* renderObject) { m_RenderEngine->CreateRenderObject(geometry, renderObject); },
-					std::forward<Args>(args)...)
-			);
-			break;
-		default:
-			assert(0);
-			break;
-		}
+		m_Commands[m_CurMainFrame].emplace_back(new RenderCommand(std::move(task)));
 
 		if (IsRenderThread())
 		{
-			RenderCommand* renderCommand = m_commands[m_CurMainFrame].back();
-			renderCommand->DoTask();
-			delete renderCommand;
-			m_commands[m_CurMainFrame].pop_back();
+			m_Commands[m_CurMainFrame].front()->DoTask();
+			m_Commands[m_CurMainFrame].pop_back();
 		}
 	}
 
 	void RenderThread::ProcessCommands()
 	{
-		for (auto& command : m_commands[m_CurrRenderFrame])
+		for (RenderCommand::Ptr& command : m_Commands[m_CurrRenderFrame])
 		{
 			command->DoTask();
 		}
 
-		m_commands[m_CurrRenderFrame].clear();
+		m_Commands[m_CurrRenderFrame].clear();
 	}
 
 	void RenderThread::OnEndFrame()
