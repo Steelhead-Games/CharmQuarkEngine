@@ -160,6 +160,20 @@ namespace cqe
 			m_NativeCommandList->SetGraphicsRootConstantBufferView(ParameterIdx, constantBufferAddress);
 		}
 
+		void D3D12CommandList::SetGraphicsDescriptorTable(uint32_t parameterIdx, uint64_t ptr)
+		{
+			m_NativeCommandList->SetGraphicsRootDescriptorTable(parameterIdx, D3D12_GPU_DESCRIPTOR_HANDLE(ptr));
+		}
+
+		void D3D12CommandList::SetGraphicsRootShaderResourseView(uint32_t parameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset)
+		{
+			assert(buffer != nullptr);
+
+			D3D12Buffer* d3d12Buffer = reinterpret_cast<D3D12Buffer*>(buffer.Get());
+			D3D12_GPU_VIRTUAL_ADDRESS srvBufferAddress = d3d12Buffer->GetHandle()->GetGPUVirtualAddress() + bufferOffset * d3d12Buffer->GetDesc().ElementSize;
+			m_NativeCommandList->SetGraphicsRootShaderResourceView(parameterIdx, srvBufferAddress);
+		}
+
 		void D3D12CommandList::SetTechnique(Technique::Ptr technique)
 		{
 			assert(technique != nullptr);

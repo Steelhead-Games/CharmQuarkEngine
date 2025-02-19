@@ -342,6 +342,16 @@ namespace cqe
 			TriangleList
 		};
 
+		enum class SamplerAddressMode : uint8_t
+		{
+			BORDER = 0
+		};
+
+		enum class SamplerMipFilter : uint8_t
+		{
+			MIN_MAG_LINEAR = 0
+		};
+
 		inline uint32_t GetFormatSize(const ResourceFormat& format)
 		{
 			switch (format)
@@ -350,6 +360,8 @@ namespace cqe
 				return 2;
 			case ResourceFormat::R16_UNORM:
 				return 2;
+			case ResourceFormat::RG32_FLOAT:
+				return 8;
 			case ResourceFormat::RGB32_FLOAT:
 				return 12;
 			default:

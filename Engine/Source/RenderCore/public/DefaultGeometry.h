@@ -14,14 +14,14 @@ namespace cqe
 			{
 				constexpr Core::array<Geometry::VertexType, 8> vertices =
 				{
-					Math::Vector3f(-1.0f, -1.0f, -1.0f),
-					Math::Vector3f(-1.0f, +1.0f, -1.0f),
-					Math::Vector3f(+1.0f, +1.0f, -1.0f),
-					Math::Vector3f(+1.0f, -1.0f, -1.0f),
-					Math::Vector3f(-1.0f, -1.0f, +1.0f),
-					Math::Vector3f(-1.0f, +1.0f, +1.0f),
-					Math::Vector3f(+1.0f, +1.0f, +1.0f),
-					Math::Vector3f(+1.0f, -1.0f, +1.0f)
+					Geometry::VertexType{Math::Vector3f{ -1.0f, -1.0f, -1.0f }, Math::Vector2f{ 0.f, 0.f }},
+					Geometry::VertexType(Math::Vector3f{ -1.0f, +1.0f, -1.0f }, Math::Vector2f{ 0.f, 1.f }),
+					Geometry::VertexType(Math::Vector3f{ +1.0f, +1.0f, -1.0f }, Math::Vector2f{ 1.f, 1.f }),
+					Geometry::VertexType(Math::Vector3f{ +1.0f, -1.0f, -1.0f }, Math::Vector2f{ 1.f, 0.f }),
+					Geometry::VertexType(Math::Vector3f{ -1.0f, -1.0f, +1.0f }, Math::Vector2f{ 0.f, 0.f }),
+					Geometry::VertexType(Math::Vector3f{ -1.0f, +1.0f, +1.0f }, Math::Vector2f{ 0.f, 1.f }),
+					Geometry::VertexType(Math::Vector3f{ +1.0f, +1.0f, +1.0f }, Math::Vector2f{ 1.f, 1.f }),
+					Geometry::VertexType(Math::Vector3f{ +1.0f, -1.0f, +1.0f }, Math::Vector2f{ 1.f, 0.f })
 				};
 
 				constexpr Core::array<Geometry::IndexType, 36> indices =

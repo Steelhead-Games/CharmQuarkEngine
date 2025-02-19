@@ -14,12 +14,26 @@ namespace cqe
 				return DXGI_FORMAT_R8G8B8A8_UNORM;
 			case ResourceFormat::RGB32_FLOAT:
 				return DXGI_FORMAT_R32G32B32_FLOAT;
+			case ResourceFormat::RG32_FLOAT:
+				return DXGI_FORMAT_R32G32_FLOAT;
 			case ResourceFormat::D24S8:
 				return DXGI_FORMAT_D24_UNORM_S8_UINT;
 			case ResourceFormat::R16_UNORM:
 				return DXGI_FORMAT_R16_UNORM;
 			case ResourceFormat::R16_UINT:
 				return DXGI_FORMAT_R16_UINT;
+			case ResourceFormat::BC1_UNORM:
+				return DXGI_FORMAT_BC1_UNORM;
+			case ResourceFormat::BC1_UNORM_SRGB:
+				return DXGI_FORMAT_BC1_UNORM_SRGB;
+			case ResourceFormat::BC2_UNORM:
+				return DXGI_FORMAT_BC2_UNORM;
+			case ResourceFormat::BC2_UNORM_SRGB:
+				return DXGI_FORMAT_BC2_UNORM_SRGB;
+			case ResourceFormat::BC3_UNORM:
+				return DXGI_FORMAT_BC3_UNORM;
+			case ResourceFormat::BC3_UNORM_SRGB:
+				return DXGI_FORMAT_BC3_UNORM_SRGB;
 			default:
 				ASSERT_NOT_IMPLEMENTED;
 				return DXGI_FORMAT_UNKNOWN;
@@ -226,6 +240,30 @@ namespace cqe
 			d3d12ClearFlags = clearFlags & ClearFlags::Stencil ? (d3d12ClearFlags | D3D12_CLEAR_FLAG_STENCIL) : d3d12ClearFlags;
 
 			return d3d12ClearFlags;
+		}
+
+		D3D12_TEXTURE_ADDRESS_MODE ConvertToD3D12TextureAddressMode(SamplerAddressMode addressMode)
+		{
+			switch (addressMode)
+			{
+			case SamplerAddressMode::BORDER:
+				return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+			default:
+				ASSERT_NOT_IMPLEMENTED;
+				return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+			}
+		}
+
+		D3D12_FILTER ConvertToD3D12Filter(SamplerMipFilter filter)
+		{
+			switch (filter)
+			{
+			case SamplerMipFilter::MIN_MAG_LINEAR:
+				return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+			default:
+				ASSERT_NOT_IMPLEMENTED;
+				return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+			}
 		}
 	}
 }

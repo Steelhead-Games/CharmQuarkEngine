@@ -17,7 +17,7 @@ namespace cqe
 		{
 			m_DescriptorSize = device->GetHandle()->GetDescriptorHandleIncrementSize(descriptorHeapType);
 
-			m_ShaderVisible = descriptorHeapType == D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			m_ShaderVisible = descriptorHeapType == D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV || descriptorHeapType == D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
 
 			D3D12_DESCRIPTOR_HEAP_DESC HeapDesc;
 			HeapDesc.NumDescriptors = NumDescriptors;

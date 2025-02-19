@@ -27,5 +27,7 @@ namespace cqe
 		DIRECT3D_API D3D12_STENCIL_OP ConvertToD3D12StencilOp(const StencilOp& stencilOp);
 		DIRECT3D_API D3D12_DEPTH_STENCIL_DESC ConvertToD3D12DepthStencilDesc(const DepthStencilDescription& dsDesc);
 		DIRECT3D_API D3D12_CLEAR_FLAGS ConvertToD3D12ClearFlag(ClearFlags::Flag clearFlags);
+		DIRECT3D_API D3D12_TEXTURE_ADDRESS_MODE ConvertToD3D12TextureAddressMode(SamplerAddressMode addressMode);
+		DIRECT3D_API D3D12_FILTER ConvertToD3D12Filter(SamplerMipFilter filter);
 	}
 }

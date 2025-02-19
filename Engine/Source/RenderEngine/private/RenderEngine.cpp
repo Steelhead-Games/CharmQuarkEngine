@@ -90,6 +90,14 @@ namespace cqe::Render
 				.InputSlot = 0,
 				.InputSlotClass = RHI::Technique::InputLayoutDescription::Classification::PerVertex,
 				.InstanceDataStepRate = 0
+			},
+			{
+				.SemanticName = "TEXCOORD",
+				.Index = 0,
+				.Format = RHI::ResourceFormat::RG32_FLOAT,
+				.InputSlot = 0,
+				.InputSlotClass = RHI::Technique::InputLayoutDescription::Classification::PerVertex,
+				.InstanceDataStepRate = 0
 			}
 		};
 
@@ -98,12 +106,24 @@ namespace cqe::Render
 			{
 				.SlotIndex = 0,
 				.SpaceIndex = 0,
-				.IsConstantBuffer = true
+				.RootSignatureType = RHI::Technique::RootSignatureDescription::RootSignatureType::ConstantBuffer
 			},
 			{
 				.SlotIndex = 1,
 				.SpaceIndex = 0,
-				.IsConstantBuffer = true
+				.RootSignatureType = RHI::Technique::RootSignatureDescription::RootSignatureType::ConstantBuffer
+			},
+			{
+				.SlotIndex = 0,
+				.SpaceIndex = 0,
+				.RootSignatureType = RHI::Technique::RootSignatureDescription::RootSignatureType::DescriptorTable,
+				.test = "srv"
+			},
+			{
+				.SlotIndex = 1,
+				.SpaceIndex = 0,
+				.RootSignatureType = RHI::Technique::RootSignatureDescription::RootSignatureType::DescriptorTable,
+				.test = "sampler"
 			}
 		};
 
@@ -121,6 +141,22 @@ namespace cqe::Render
 		m_rhi->GetCommandQueue()->ExecuteCommandLists({ m_rhi->GetCommandList() });
 
 		m_rhi->GetFence()->Sync(m_rhi->GetCommandQueue());
+
+		RHI::Texture* texture = m_rhi->CreateTexture(
+			{
+				.Dimension = RHI::Texture::Dimensions::Two,
+				.Width = 512, // TODO: where from?
+				.Height = 512, // TODO: where from?
+				.MipLevels = 10, // TODO: where from?
+				.Format = RHI::ResourceFormat::BC1_UNORM,
+				.Flags = RHI::Texture::UsageFlags::ShaderResource
+			}
+		);
+
+		RHI::Sampler* sampler = m_rhi->CreateSampler(
+			{ 
+			}
+		);
 	}
 
 	void RenderEngine::Update(size_t frame)
@@ -193,6 +229,11 @@ namespace cqe::Render
 
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(0, m_ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], meshID);
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, m_MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
+
+			m_rhi->GetCommandList()->SetGraphicsDescriptorTable(2, m_rhi->SRV_TEST_HANDLE);
+			m_rhi->GetCommandList()->SetGraphicsDescriptorTable(3, m_rhi->SAMPLER_TEST_HANDLE);
+
+			// m_rhi->GetCommandList()->SetGraphicsRootShaderResourceView(2, address, 0);
 
 			m_rhi->GetCommandList()->DrawIndexedInstanced(
 				m_Meshes[meshID]->GetIndexBuffer()->GetDesc().Count,

@@ -46,9 +46,17 @@ namespace cqe
 
 			struct RootSignatureDescription
 			{
+				enum class RootSignatureType
+				{
+					ConstantBuffer,
+					DescriptorTable,
+					ShaderResourceView
+				};
+
 				uint32_t SlotIndex;
 				uint32_t SpaceIndex;
-				bool IsConstantBuffer;
+				RootSignatureType RootSignatureType;
+				std::string test = "nothing";
 			};
 			using RootSignature = std::vector<RootSignatureDescription>;
 

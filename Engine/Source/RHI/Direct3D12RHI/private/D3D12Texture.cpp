@@ -7,14 +7,14 @@ namespace cqe
 		D3D12Texture::D3D12Texture(
 			const Texture::Description& desc,
 			RefCountPtr<ID3D12Resource> resource,
-			D3D12_CPU_DESCRIPTOR_HANDLE srv,
 			D3D12_CPU_DESCRIPTOR_HANDLE rtv,
+			D3D12_CPU_DESCRIPTOR_HANDLE srv,
 			D3D12_CPU_DESCRIPTOR_HANDLE dsv
 		)
 			: Texture(desc),
 			m_NativeResource(resource),
-			m_RenderTargetView(srv),
-			m_ShaderResourceView(rtv),
+			m_RenderTargetView(rtv),
+			m_ShaderResourceView(srv),
 			m_DepthStencilView(dsv)
 		{
 

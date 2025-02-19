@@ -5,6 +5,7 @@
 #include <RHI/Direct3D12RHI/export.h>
 #include <Mesh.h>
 #include <Texture.h>
+#include <d3d12.h>
 
 namespace cqe
 {
@@ -37,6 +38,9 @@ namespace cqe
 			virtual Mesh::Ptr CreateMesh(
 				const Mesh::VertexBufferDescription& vertexDesc,
 				const Mesh::IndexBufferDescription& indexDesc
+			) override;
+			virtual Sampler::Ptr CreateSampler(
+				const Sampler::Description& description
 			) override;
 			virtual void SetDescriptorHeaps() override;
 
