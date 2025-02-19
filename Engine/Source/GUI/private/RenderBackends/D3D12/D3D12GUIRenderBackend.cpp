@@ -46,6 +46,13 @@ namespace cqe::GUI
 		ImGui_ImplDX12_Init(&init_info);
 	}
 
+	void D3D12RenderBackend::Deinit(Render::RHI::Context::Ptr rhiContext)
+	{
+		assert(rhiContext == g_RHIContext);
+		ImGui_ImplDX12_Shutdown();
+		g_RHIContext = nullptr;
+	}
+
 	void D3D12RenderBackend::NewFrame()
 	{
 		ImGui_ImplDX12_NewFrame();

@@ -12,8 +12,6 @@ namespace cqe::Core
 {
 	Window::Ptr g_MainWindowsApplication = nullptr;
 
-	std::function<bool(PackedVariables&)> g_GUIWindowsCallback = nullptr;
-
 	HWND GetPlatformWindowHandle(void* handle)
 	{
 		return reinterpret_cast<HWND>(handle);
@@ -23,7 +21,8 @@ namespace cqe::Core
 	{
 		PackedVariables packedVariables;
 		packedVariables.Encode(hwnd, msg, wParam, lParam);
-		if (g_GUIWindowsCallback && g_GUIWindowsCallback(packedVariables))
+
+		if (g_MainWindowsApplication->UICallback(packedVariables))
 		{
 			return true;
 		}
@@ -178,6 +177,17 @@ namespace cqe::Core
 		}
 	}
 
+	void Window::Resize(uint32_t newWidth, uint32_t newHeight)
+	{
+		m_Width = newWidth;
+		m_Height = newHeight;
+
+		if (m_OnResizeCallback) [[likely]]
+		{
+			m_OnResizeCallback();
+		}
+	}
+
 	void Window::UnFocus()
 	{
 		ReleaseCapture();
@@ -202,5 +212,20 @@ namespace cqe::Core
 		ShowCursor(true);
 
 		m_IsMouseCaptured = false;
+	}
+
+	void Window::SetUICallback(std::function<bool(PackedVariables&)> guiCallback)
+	{
+		m_GUICallback = guiCallback;
+	}
+
+	bool Window::UICallback(PackedVariables& packedVariables)
+	{
+		return m_GUICallback && m_GUICallback(packedVariables);
+	}
+
+	void Window::SetOnResizeCallback(std::function<void()> onResizeCallback)
+	{
+		m_OnResizeCallback = onResizeCallback;
 	}
 }

@@ -1,3 +1,5 @@
+#include "BasicRootSignature.ihlsl"
+
 cbuffer cbPerObject : register(b0)
 {
 	float4x4 gWorldViewProj;
@@ -23,6 +25,7 @@ struct VertexOut
     float2 uv    : TEXCOORD0;
 };
 
+[RootSignature(BasicRootSignature)]
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
@@ -34,6 +37,7 @@ VertexOut VS(VertexIn vin)
     return vout;
 }
 
+[RootSignature(BasicRootSignature)]
 float4 PS(VertexOut pin) : SV_Target
 {    
     return tex.Sample(samp, pin.uv);

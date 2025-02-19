@@ -42,7 +42,7 @@ namespace cqe
 			};
 
 		public:
-			using Ptr =  RefCountPtr<Texture>;
+			using Ptr = RefCountPtr<Texture>;
 
 		public:
 			Texture() = delete;

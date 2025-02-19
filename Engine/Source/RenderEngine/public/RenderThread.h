@@ -14,11 +14,6 @@ namespace cqe::Render
 
 	class RenderEngine;
 
-	enum class ERC : uint32_t
-	{
-		CreateRenderObject = 0,
-	};
-
 	class RENDER_ENGINE_API RenderThread final
 	{
 	public:
@@ -30,9 +25,9 @@ namespace cqe::Render
 
 	public:
 		void Run();
+		void Stop();
 
-		template<typename... Args>
-		void EnqueueCommand(ERC command, Args... args);
+		void EnqueueCommand(RenderCommand::Task task);
 
 		void OnEndFrame();
 
@@ -42,7 +37,7 @@ namespace cqe::Render
 
 		static bool IsRenderThread();
 
-		void WaitForRenderEngineToInit();
+		void WaitForRenderThread();
 
 	private:
 		void ProcessCommands();
@@ -52,14 +47,16 @@ namespace cqe::Render
 		inline static std::jthread::id s_RenderThreadId;
 		inline static std::jthread::id s_MainThreadId;
 		std::unique_ptr<std::jthread> m_Thread;
-		std::mutex frameMutex[RenderCore::g_FrameBufferCount];
-		std::binary_semaphore m_RenderEngineIsReady{ 0 };
+		std::mutex m_FrameMutexes[RenderCore::g_FrameBufferCount];
+		std::barrier<> m_ThreadsSynchronizationBarrier{ 2 };
 
 		RenderEngine* m_RenderEngine = nullptr;
 
 		size_t m_CurrRenderFrame = 0;
 		size_t m_CurMainFrame = 0;
 
-		std::vector<RenderCommand*> m_commands[RenderCore::g_FrameBufferCount];
+		std::vector<RenderCommand::Ptr> m_Commands[RenderCore::g_FrameBufferCount];
+
+		bool m_IsRunning : 1 = false;
 	};
 }

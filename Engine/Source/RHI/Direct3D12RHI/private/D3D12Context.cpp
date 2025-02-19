@@ -2,7 +2,6 @@
 #include <Debug/Assertions.h>
 #include <Geometry.h>
 #include <Debug/Console.h>
-#include <Debug/Console.h>
 #include <FileSystem.h>
 #include <Vector.h>
 #include <RHICommon.h>
@@ -63,6 +62,34 @@ namespace cqe
 
 		D3D12Context::~D3D12Context()
 		{
+		}
+
+		bool D3D12Context::CheckMinimalRequirements() const
+		{
+			D3D_FEATURE_LEVEL levels[] =
+			{
+				D3D_FEATURE_LEVEL_12_2,
+				D3D_FEATURE_LEVEL_12_1,
+			};
+			D3D12_FEATURE_DATA_FEATURE_LEVELS supportedLevels;
+			supportedLevels.NumFeatureLevels = sizeof(levels) / sizeof(D3D_FEATURE_LEVEL);
+			supportedLevels.pFeatureLevelsRequested = levels;
+			m_Device->GetHandle()->CheckFeatureSupport(
+				D3D12_FEATURE_FEATURE_LEVELS,
+				&supportedLevels,
+				sizeof(D3D12_FEATURE_DATA_FEATURE_LEVELS)
+			);
+
+			D3D12_FEATURE_DATA_SHADER_MODEL shaderModelFeature{ .HighestShaderModel = D3D_SHADER_MODEL_6_6 };
+			HRESULT hr = m_Device->GetHandle()->CheckFeatureSupport(
+				D3D12_FEATURE_SHADER_MODEL,
+				&shaderModelFeature,
+				sizeof(D3D12_FEATURE_DATA_SHADER_MODEL)
+			);
+			assert(SUCCEEDED(hr));
+
+			return shaderModelFeature.HighestShaderModel >= D3D_SHADER_MODEL_6_6
+				&& supportedLevels.MaxSupportedFeatureLevel >= D3D_FEATURE_LEVEL_12_1;
 		}
 
 		Device::Ptr D3D12Context::GetDevice() const
@@ -354,57 +381,9 @@ namespace cqe
 		Technique::Ptr D3D12Context::CreateTechnique(
 			const Technique::ShaderInfo& shaderInfo,
 			const Technique::InputLayout& inputLayout,
-			const Technique::RootSignature& rootSignature
+			const Technique::RootSignatureDescription& rootSignatureDescription
 		)
 		{
-			// Root Signature
-			std::vector<CD3DX12_ROOT_PARAMETER> slotRootParameter{ rootSignature.size() };
-			// CD3DX12_ROOT_PARAMETER* slotRootParameter = new CD3DX12_ROOT_PARAMETER[rootSignature.size()];
-			std::vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges;
-			descriptorRanges.reserve(2);
-
-			for (uint64_t rootSigIdx = 0; rootSigIdx < rootSignature.size(); ++rootSigIdx)
-			{
-				switch (rootSignature[rootSigIdx].RootSignatureType)
-				{
-				case Technique::RootSignatureDescription::RootSignatureType::ConstantBuffer:
-					slotRootParameter[rootSigIdx].InitAsConstantBufferView(rootSignature[rootSigIdx].SlotIndex, rootSignature[rootSigIdx].SpaceIndex);
-					break;
-				case Technique::RootSignatureDescription::RootSignatureType::DescriptorTable:
-					descriptorRanges.push_back({ rootSignature[rootSigIdx].test == "srv" ? D3D12_DESCRIPTOR_RANGE_TYPE_SRV : D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, rootSignature[rootSigIdx].SlotIndex, rootSignature[rootSigIdx].SpaceIndex });
-					slotRootParameter[rootSigIdx].InitAsDescriptorTable(1, &descriptorRanges[descriptorRanges.size() - 1], D3D12_SHADER_VISIBILITY_PIXEL);
-					break;
-				case Technique::RootSignatureDescription::RootSignatureType::ShaderResourceView:
-					slotRootParameter[rootSigIdx].InitAsShaderResourceView(rootSignature[rootSigIdx].SlotIndex, rootSignature[rootSigIdx].SpaceIndex);
-					break;
-				default:
-					ASSERT_NOT_IMPLEMENTED;
-				}
-			}
-
-			CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(rootSignature.size(), slotRootParameter.data(), 0, nullptr,
-				D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-			RefCountPtr<ID3DBlob> serializedRootSig = nullptr;
-			RefCountPtr<ID3DBlob> errorBlob = nullptr;
-			HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-				serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
-
-			if (errorBlob != nullptr)
-			{
-				Core::Console::PrintDebug((char*)errorBlob->GetBufferPointer());
-			}
-			assert(SUCCEEDED(hr));
-
-			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
-			hr = m_Device->GetHandle()->CreateRootSignature(
-				0,
-				serializedRootSig->GetBufferPointer(),
-				serializedRootSig->GetBufferSize(),
-				IID_PPV_ARGS(&d3d12RootSignature));
-
-			assert(SUCCEEDED(hr));
-
 			// Shaders
 			D3D12Technique::ShaderBlobList shaderBlobs;
 
@@ -412,7 +391,17 @@ namespace cqe
 			{
 				std::wstring shaderPath = Core::g_FileSystem->GetShaderPath(shaderDesc.ShaderFile);
 
-				shaderBlobs.emplace(shaderDesc.Type, D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type)));
+				RefCountPtr<ID3DBlob> shader = D3D12Util::CompileShader(shaderPath, nullptr, shaderDesc.EntryPoint, GetShaderTarget(shaderDesc.Type));
+				shaderBlobs.emplace(shaderDesc.Type, shader);
+			}
+
+			// Root Signature
+			RefCountPtr<ID3D12RootSignature> d3d12RootSignature;
+			{
+				RefCountPtr<ID3DBlob> rootSignatureBlob = D3D12Util::CompileRootSignature(rootSignatureDescription.Type, Core::g_FileSystem->GetShaderPath(rootSignatureDescription.Type + ".ihlsl"));
+
+				HRESULT hr = m_Device->GetHandle()->CreateRootSignature(0, rootSignatureBlob->GetBufferPointer(), rootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&d3d12RootSignature));
+				assert(SUCCEEDED(hr));
 			}
 
 			// Input Layout
@@ -421,19 +410,19 @@ namespace cqe
 			for (const Technique::InputLayoutDescription& inputLayoutDesc : inputLayout)
 			{
 				inputLayoutList.emplace_back(
-						inputLayoutDesc.SemanticName.c_str(),
-						inputLayoutDesc.Index,
-						ConvertToDXGIFormat(inputLayoutDesc.Format),
-						inputLayoutDesc.InputSlot,
-						byteOffset,
-						ConvertToD3D12InputClassification(inputLayoutDesc.InputSlotClass),
-						inputLayoutDesc.InstanceDataStepRate
+					inputLayoutDesc.SemanticName.c_str(),
+					inputLayoutDesc.Index,
+					ConvertToDXGIFormat(inputLayoutDesc.Format),
+					inputLayoutDesc.InputSlot,
+					byteOffset,
+					ConvertToD3D12InputClassification(inputLayoutDesc.InputSlotClass),
+					inputLayoutDesc.InstanceDataStepRate
 				);
 
 				byteOffset += GetFormatSize(inputLayoutDesc.Format);
 			}
 
-			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignature, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
+			return D3D12Technique::Ptr(new D3D12Technique(shaderInfo, inputLayout, rootSignatureDescription, d3d12RootSignature, std::move(shaderBlobs), std::move(inputLayoutList)));
 		}
 
 		PipelineStateObject::Ptr D3D12Context::CreatePSO(const PipelineStateObject::Description& description)
@@ -492,7 +481,7 @@ namespace cqe
 
 		void D3D12Context::SetDescriptorHeaps()
 		{
-			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get(), m_SamplerHeap->GetHandle().Get() };
+			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get() };
 			m_CommandList->GetHandle()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 		}
 	}

@@ -31,9 +31,21 @@ namespace cqe
 
 		m_GameTimer.Reset();
 
-		m_renderThread->WaitForRenderEngineToInit();
+		m_renderThread->WaitForRenderThread();
 
-		Core::g_GUIWindowsCallback = [](Core::PackedVariables& packedVariables) { return GUI::GUIContext::GetInstance()->UpdateInput(packedVariables); };
+		Core::g_MainWindowsApplication->SetUICallback(
+			[](Core::PackedVariables& packedVariables)
+			{ return GUI::GUIContext::GetInstance()->UpdateInput(packedVariables); }
+		);
+
+		Core::g_MainWindowsApplication->SetOnResizeCallback(
+			[this]()
+			{
+				m_renderThread->EnqueueCommand(
+					[this]() { m_renderThread->GetRenderEngine()->OnResize(); }
+				);
+			}
+		);
 
 		bool quit = false;
 		while (!quit)
@@ -50,6 +62,9 @@ namespace cqe
 			// The most common idea for such a loop is that it returns false when quit is required, or true otherwise
 			quit = !PlatformLoop();
 		}
+
+		m_renderThread->Stop();
+		m_renderThread->WaitForRenderThread();
 	}
 
 	void Game::Update(float dt)

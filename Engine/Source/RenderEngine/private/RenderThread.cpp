@@ -1,4 +1,3 @@
-#include <RenderCommands.h>
 #include <RenderEngine.h>
 #include <RenderThread.h>
 
@@ -22,7 +21,7 @@ namespace cqe::Render
 
 		s_MainThreadId = std::this_thread::get_id();
 
-		frameMutex[m_CurMainFrame].lock();
+		m_FrameMutexes[m_CurMainFrame].lock();
 
 		m_Thread = std::make_unique<std::jthread>(RunThisThread, this);
 		m_Thread->detach();
@@ -40,11 +39,13 @@ namespace cqe::Render
 
 		m_RenderEngine = new RenderEngine();
 
-		m_RenderEngineIsReady.release();
+		m_ThreadsSynchronizationBarrier.arrive_and_drop();
 
-		while (true)
+		m_IsRunning = true;
+
+		while (m_IsRunning)
 		{
-			std::lock_guard<std::mutex> lock(frameMutex[m_CurrRenderFrame]);
+			std::lock_guard<std::mutex> lock(m_FrameMutexes[m_CurrRenderFrame]);
 
 			ProcessCommands();
 
@@ -54,6 +55,14 @@ namespace cqe::Render
 
 			OnEndFrame();
 		}
+
+		m_ThreadsSynchronizationBarrier.arrive_and_drop();
+	}
+
+	void RenderThread::Stop()
+	{
+		m_FrameMutexes[m_CurMainFrame].unlock();
+		m_IsRunning = false;
 	}
 
 	bool RenderThread::IsRenderThread()
@@ -61,40 +70,25 @@ namespace cqe::Render
 		return s_RenderThreadId == std::this_thread::get_id();
 	}
 
-	template<typename... Args>
-	void RenderThread::EnqueueCommand(ERC command, Args... args)
+	void RenderThread::EnqueueCommand(RenderCommand::Task task)
 	{
-		switch (command)
-		{
-		case ERC::CreateRenderObject:
-			m_commands[m_CurMainFrame].push_back(
-				new EnqueuedRenderCommand(
-					[this](RenderCore::Geometry* geometry, RenderObject* renderObject) { m_RenderEngine->CreateRenderObject(geometry, renderObject); },
-					std::forward<Args>(args)...)
-			);
-			break;
-		default:
-			assert(0);
-			break;
-		}
+		m_Commands[m_CurMainFrame].emplace_back(new RenderCommand(std::move(task)));
 
 		if (IsRenderThread())
 		{
-			RenderCommand* renderCommand = m_commands[m_CurMainFrame].back();
-			renderCommand->DoTask();
-			delete renderCommand;
-			m_commands[m_CurMainFrame].pop_back();
+			m_Commands[m_CurMainFrame].front()->DoTask();
+			m_Commands[m_CurMainFrame].pop_back();
 		}
 	}
 
 	void RenderThread::ProcessCommands()
 	{
-		for (auto& command : m_commands[m_CurrRenderFrame])
+		for (RenderCommand::Ptr& command : m_Commands[m_CurrRenderFrame])
 		{
 			command->DoTask();
 		}
 
-		m_commands[m_CurrRenderFrame].clear();
+		m_Commands[m_CurrRenderFrame].clear();
 	}
 
 	void RenderThread::OnEndFrame()
@@ -110,11 +104,11 @@ namespace cqe::Render
 		}
 		else
 		{
-			frameMutex[m_CurMainFrame].unlock();
+			m_FrameMutexes[m_CurMainFrame].unlock();
 
 			m_CurMainFrame = GetNextFrame(m_CurMainFrame);
 
-			frameMutex[m_CurMainFrame].lock();
+			m_FrameMutexes[m_CurMainFrame].lock();
 		}
 	}
 
@@ -128,8 +122,8 @@ namespace cqe::Render
 		return m_RenderEngine;
 	}
 
-	void RenderThread::WaitForRenderEngineToInit()
+	void RenderThread::WaitForRenderThread()
 	{
-		m_RenderEngineIsReady.acquire();
+		m_ThreadsSynchronizationBarrier.arrive_and_wait();
 	}
 }

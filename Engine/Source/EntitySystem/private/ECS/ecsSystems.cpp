@@ -5,6 +5,7 @@
 #include <Geometry.h>
 #include <RenderThread.h>
 #include <RenderObject.h>
+#include <RenderEngine.h>
 
 namespace cqe::EntitySystem::ECS
 {
@@ -17,7 +18,9 @@ namespace cqe::EntitySystem::ECS
 		{
 			Render::RenderObject* renderObjectPtr = new Render::RenderObject(nullptr);
 			e.set(RenderObjectPtr{ renderObjectPtr });
-			renderThread->ptr->EnqueueCommand(Render::ERC::CreateRenderObject, geometry.ptr, renderObjectPtr);
+			renderThread->ptr->EnqueueCommand(
+				[geometry, renderObjectPtr]() { renderThread->ptr->GetRenderEngine()->CreateRenderObject(geometry.ptr, renderObjectPtr); }
+			);
 			e.remove<GeometryPtr>();
 		});
 	}

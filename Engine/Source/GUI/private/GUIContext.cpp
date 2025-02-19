@@ -26,6 +26,11 @@ namespace cqe::GUI
 		GUIContextPlatform::InitRenderBackend(rhiContext);
 	}
 
+	void GUIContext::DeinitRenderBackend(std::shared_ptr<Render::RHI::Context> rhiContext)
+	{
+		GUIContextPlatform::DeinitRenderBackend(rhiContext);
+	}
+
 	bool GUIContext::UpdateInput(Core::PackedVariables& arguments)
 	{
 		return GUIContextPlatform::UpdateInput(arguments);
@@ -67,7 +72,7 @@ namespace cqe::GUI
 	void GUIContext::Draw()
 	{
 		ImGui::Render();
-		
+
 		ImDrawData* renderData = new ImDrawData(*ImGui::GetDrawData());
 
 		for (uint32_t i = 0; i < ImGui::GetDrawData()->CmdListsCount; ++i)

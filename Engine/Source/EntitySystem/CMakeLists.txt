@@ -78,4 +78,5 @@ target_precompile_headers(EntitySystem
 		<queue>
 		<stack>
 		<semaphore>
+		<barrier>
 )

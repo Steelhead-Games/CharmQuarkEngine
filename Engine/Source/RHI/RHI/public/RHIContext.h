@@ -42,7 +42,7 @@ namespace cqe
 			virtual Technique::Ptr CreateTechnique(
 				const Technique::ShaderInfo& shaderInfo,
 				const Technique::InputLayout& inputLayout,
-				const Technique::RootSignature& rootSignature
+				const Technique::RootSignatureDescription& rootSignatureDescription
 			) = 0;
 			virtual PipelineStateObject::Ptr CreatePSO(const PipelineStateObject::Description& description) = 0;
 			virtual Mesh::Ptr CreateMesh(
@@ -53,6 +53,7 @@ namespace cqe
 				const Sampler::Description& description 
 			) = 0;
 			virtual void SetDescriptorHeaps() = 0;
+			[[nodiscard]] virtual bool CheckMinimalRequirements() const = 0;
 
 		public:
 			virtual Device::Ptr GetDevice() const = 0;
