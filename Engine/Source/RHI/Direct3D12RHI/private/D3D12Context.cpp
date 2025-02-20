@@ -16,7 +16,6 @@
 #include <D3D12CommandAllocator.h>
 #include <D3D12CommandList.h>
 #include <D3D12Texture.h>
-#include <D3D12Sampler.h>
 #include <D3D12Context.h>
 #include <D3D12Technique.h>
 #include <D3D12PipelineStateObject.h>
@@ -158,30 +157,6 @@ namespace cqe
 			return Mesh::Ptr(new Mesh(vertexBuffer, indexBuffer, indexDesc.Format));
 		}
 
-		Sampler::Ptr D3D12Context::CreateSampler(const Sampler::Description& description)
-		{
-			D3D12_CPU_DESCRIPTOR_HANDLE samplerCpuDesciptor = D3D12_CPU_DESCRIPTOR_HANDLE(0);
-			D3D12_GPU_DESCRIPTOR_HANDLE samplerGpuDesciptor = D3D12_GPU_DESCRIPTOR_HANDLE(0);
-			D3D12_SAMPLER_DESC samplerDesc
-			{
-				.Filter = ConvertToD3D12Filter(description.filter),
-				.AddressU = ConvertToD3D12TextureAddressMode(description.addressModeU),
-				.AddressV = ConvertToD3D12TextureAddressMode(description.addressModeV),
-				.AddressW = ConvertToD3D12TextureAddressMode(description.addressModeW),
-				.MipLODBias = description.mipLodBias,
-				.MaxAnisotropy = description.maxAnisotropy,
-				.ComparisonFunc = ConvertToD3D12ComparisonFunc(description.comparisonFunction),
-				.MinLOD = description.minLod,
-				.MaxLOD = description.maxLod
-			};
-
-			m_SamplerHeap->Alloc(&samplerCpuDesciptor, &samplerGpuDesciptor);
-			m_Device->GetHandle()->CreateSampler(&samplerDesc, samplerCpuDesciptor);
-			SAMPLER_TEST_HANDLE = samplerGpuDesciptor.ptr;
-
-			return Sampler::Ptr(new D3D12Sampler(description, samplerCpuDesciptor));
-		}
-
 		Texture::Ptr D3D12Context::CreateTexture(const Texture::Description& description)
 		{
 			RefCountPtr<ID3D12Resource> textureResource;
@@ -267,12 +242,14 @@ namespace cqe
 					break;
 				}
 
+				RefCountPtr<ID3D12Resource> TEST_TEX;
+
 				std::unique_ptr<uint8_t[]> ddsData;
 				std::vector<D3D12_SUBRESOURCE_DATA> subresourceData;
-				HRESULT hr = DirectX::LoadDDSTextureFromFile(m_Device->GetHandle(), Core::g_FileSystem->GetFilePath("Texture.dds").c_str(), textureResource.GetAddressOf(), ddsData, subresourceData);
+				HRESULT hr = DirectX::LoadDDSTextureFromFile(m_Device->GetHandle(), Core::g_FileSystem->GetFilePath("Texture.dds").c_str(), TEST_TEX.GetAddressOf(), ddsData, subresourceData);
 				assert(SUCCEEDED(hr));
 
-				uint64_t dataSize = GetRequiredIntermediateSize(textureResource.Get(), 0, subresourceData.size());
+				uint64_t dataSize = GetRequiredIntermediateSize(TEST_TEX.Get(), 0, subresourceData.size());
 
 				m_CommandList->Reset();
 
@@ -287,9 +264,11 @@ namespace cqe
 
 				ID3D12Resource* bufferResource = reinterpret_cast<ID3D12Resource*>(srvBuffer->GetNativeObject().GetPtr());
 
-				auto b = UpdateSubresources(m_CommandList->GetHandle(), textureResource.Get(), bufferResource, 0, 0, static_cast<uint32_t>(subresourceData.size()), subresourceData.data());
+				UpdateSubresources(m_CommandList->GetHandle(), TEST_TEX.Get(), bufferResource, 0, 0, static_cast<uint32_t>(subresourceData.size()), subresourceData.data());
 
-				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(textureResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+				auto a = TEST_TEX.Get()->GetDesc();
+
+				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(TEST_TEX.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 				m_CommandList->GetHandle()->ResourceBarrier(1, &barrier);
 
 				m_CommandList->Close();
@@ -298,8 +277,10 @@ namespace cqe
 				m_Fence->Sync(m_CommandQueue);
 
 				m_SrvCbvUavHeap->Alloc(&srvCpuDesciptor, &srvGpuDesciptor);
-				m_Device->GetHandle()->CreateShaderResourceView(textureResource.Get(), &srvDesc, srvCpuDesciptor);
+				m_Device->GetHandle()->CreateShaderResourceView(TEST_TEX.Get(), &srvDesc, srvCpuDesciptor);
 				SRV_TEST_HANDLE = srvGpuDesciptor.ptr;
+
+				return D3D12Texture::Ptr(new D3D12Texture(description, TEST_TEX, srvCpuDesciptor, srvCpuDesciptor, depthStencilCpuDesciptor));
 			}
 
 			D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDesciptor = D3D12_CPU_DESCRIPTOR_HANDLE(0);
@@ -481,7 +462,7 @@ namespace cqe
 
 		void D3D12Context::SetDescriptorHeaps()
 		{
-			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get() };
+			ID3D12DescriptorHeap* descriptorHeaps[] = { m_SrvCbvUavHeap->GetHandle().Get(), m_SamplerHeap->GetHandle().Get() };
 			m_CommandList->GetHandle()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 		}
 	}

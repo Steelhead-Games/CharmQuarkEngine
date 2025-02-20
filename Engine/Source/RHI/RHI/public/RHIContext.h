@@ -13,7 +13,6 @@
 #include <CommandAllocator.h>
 #include <CommandList.h>
 #include <Texture.h>
-#include <Sampler.h>
 #include <Technique.h>
 #include <PipelineStateObject.h>
 
@@ -49,9 +48,6 @@ namespace cqe
 				const Mesh::VertexBufferDescription& vertexDesc,
 				const Mesh::IndexBufferDescription& indexDesc
 			) = 0;
-			virtual Sampler::Ptr CreateSampler(
-				const Sampler::Description& description 
-			) = 0;
 			virtual void SetDescriptorHeaps() = 0;
 			[[nodiscard]] virtual bool CheckMinimalRequirements() const = 0;
 
@@ -64,7 +60,6 @@ namespace cqe
 			virtual CommandList::Ptr GetCommandList() const = 0;
 
 			uint64_t SRV_TEST_HANDLE = 0;
-			uint64_t SAMPLER_TEST_HANDLE = 0;
 
 		protected:
 			Context() = default;

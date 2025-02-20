@@ -39,9 +39,6 @@ namespace cqe
 				const Mesh::VertexBufferDescription& vertexDesc,
 				const Mesh::IndexBufferDescription& indexDesc
 			) override;
-			virtual Sampler::Ptr CreateSampler(
-				const Sampler::Description& description
-			) override;
 			virtual void SetDescriptorHeaps() override;
 			virtual bool CheckMinimalRequirements() const override;
 

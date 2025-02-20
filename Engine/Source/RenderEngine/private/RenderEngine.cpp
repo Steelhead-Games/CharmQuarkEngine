@@ -141,13 +141,8 @@ namespace cqe::Render
 				.Width = 512, // TODO: where from?
 				.Height = 512, // TODO: where from?
 				.MipLevels = 10, // TODO: where from?
-				.Format = RHI::ResourceFormat::BC1_UNORM,
+				.Format = RHI::ResourceFormat::RGBA8_UNORM,
 				.Flags = RHI::Texture::UsageFlags::ShaderResource
-			}
-		);
-
-		RHI::Sampler* sampler = m_rhi->CreateSampler(
-			{ 
 			}
 		);
 	}
@@ -238,7 +233,6 @@ namespace cqe::Render
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, g_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
 
 			m_rhi->GetCommandList()->SetGraphicsDescriptorTable(2, m_rhi->SRV_TEST_HANDLE);
-			m_rhi->GetCommandList()->SetGraphicsDescriptorTable(3, m_rhi->SAMPLER_TEST_HANDLE);
 
 			// m_rhi->GetCommandList()->SetGraphicsRootShaderResourceView(2, address, 0);
 

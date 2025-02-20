@@ -14,6 +14,8 @@ namespace cqe
 				return DXGI_FORMAT_R8G8B8A8_UNORM;
 			case ResourceFormat::RGB32_FLOAT:
 				return DXGI_FORMAT_R32G32B32_FLOAT;
+			case ResourceFormat::RGBA32_FLOAT:
+				return DXGI_FORMAT_R32G32B32A32_FLOAT;
 			case ResourceFormat::RG32_FLOAT:
 				return DXGI_FORMAT_R32G32_FLOAT;
 			case ResourceFormat::D24S8:
