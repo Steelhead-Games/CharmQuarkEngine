@@ -11,7 +11,7 @@ cbuffer cbPerMaterial : register(b1)
 }
 
 Texture2D<float4> tex : register(t0);
-SamplerState samp : register(s3);
+sampler samp : register(s3);
 
 struct VertexIn
 {
@@ -40,5 +40,5 @@ VertexOut VS(VertexIn vin)
 [RootSignature(BasicRootSignature)]
 float4 PS(VertexOut pin) : SV_Target
 {    
-    return tex.Sample(samp, float2(0.5f, 0.5f));
+    return Albedo * tex.Sample(samp, pin.uv);
 }

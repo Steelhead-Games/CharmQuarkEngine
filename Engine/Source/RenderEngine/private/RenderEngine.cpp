@@ -42,6 +42,7 @@ namespace cqe::Render
 			RHI::Texture::Ptr DepthStencil;
 			std::vector<RHI::Mesh::Ptr> Meshes;
 			std::vector<Material*> Materials;
+			std::vector<RHI::Texture::Ptr> Textures;
 		};
 
 		std::unique_ptr<TemporalResources> g_RenderPassResources;
@@ -135,16 +136,16 @@ namespace cqe::Render
 
 		m_rhi->GetFence()->Sync(m_rhi->GetCommandQueue());
 
-		RHI::Texture* texture = m_rhi->CreateTexture(
+		g_RenderPassResources->Textures.push_back(m_rhi->CreateTexture(
 			{
 				.Dimension = RHI::Texture::Dimensions::Two,
 				.Width = 512, // TODO: where from?
 				.Height = 512, // TODO: where from?
 				.MipLevels = 10, // TODO: where from?
-				.Format = RHI::ResourceFormat::RGBA8_UNORM,
+				.Format = RHI::ResourceFormat::BC1_UNORM,
 				.Flags = RHI::Texture::UsageFlags::ShaderResource
 			}
-		);
+		));
 	}
 
 	RenderEngine::~RenderEngine()
@@ -234,8 +235,6 @@ namespace cqe::Render
 
 			m_rhi->GetCommandList()->SetGraphicsDescriptorTable(2, m_rhi->SRV_TEST_HANDLE);
 
-			// m_rhi->GetCommandList()->SetGraphicsRootShaderResourceView(2, address, 0);
-
 			m_rhi->GetCommandList()->DrawIndexedInstanced(
 				g_RenderPassResources->Meshes[meshID]->GetIndexBuffer()->GetDesc().Count,
 				1, 0, 0, 0);
@@ -307,14 +306,14 @@ namespace cqe::Render
 				.initData = geometry->GetIndices()
 			});
 
-			g_RenderPassResources->Meshes.push_back(mesh);
+		g_RenderPassResources->Meshes.push_back(mesh);
 
-			Material::ID materialID = g_RenderPassResources->Materials.size();
-			Material* material = new Material(materialID);
-			g_RenderPassResources->Materials.push_back(material);
+		Material::ID materialID = g_RenderPassResources->Materials.size();
+		Material* material = new Material(materialID);
+		g_RenderPassResources->Materials.push_back(material);
 
-			renderObject->SetMeshID(meshID);
-			renderObject->SetMaterialID(materialID);
-			m_RenderObjects.push_back(renderObject);
+		renderObject->SetMeshID(meshID);
+		renderObject->SetMaterialID(materialID);
+		m_RenderObjects.push_back(renderObject);
 	}
 }
