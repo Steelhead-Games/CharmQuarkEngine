@@ -9,13 +9,15 @@ namespace cqe
 			RefCountPtr<ID3D12Resource> resource,
 			D3D12_CPU_DESCRIPTOR_HANDLE rtv,
 			D3D12_CPU_DESCRIPTOR_HANDLE srv,
-			D3D12_CPU_DESCRIPTOR_HANDLE dsv
+			D3D12_CPU_DESCRIPTOR_HANDLE dsv,
+			D3D12_GPU_DESCRIPTOR_HANDLE srvGpu
 		)
 			: Texture(desc),
 			m_NativeResource(resource),
 			m_RenderTargetView(rtv),
 			m_ShaderResourceView(srv),
-			m_DepthStencilView(dsv)
+			m_DepthStencilView(dsv),
+			m_GpuShaderResourceView(srvGpu)
 		{
 
 		}
@@ -36,6 +38,12 @@ namespace cqe
 		{
 			assert((m_Description.Flags & UsageFlags::DepthStencil) != 0);
 			return m_DepthStencilView;
+		}
+
+		D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture::GetGpuShaderResourceView() const
+		{
+			assert((m_Description.Flags & UsageFlags::ShaderResource) != 0);
+			return m_GpuShaderResourceView;
 		}
 
 		RenderNativeObject D3D12Texture::GetNativeObject()

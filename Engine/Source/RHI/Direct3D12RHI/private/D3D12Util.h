@@ -106,6 +106,20 @@ namespace cqe
 
 				return byteCode;
 			}
+
+			static void LoadTextureToResource(
+				const D3D12Device* device,
+				const std::wstring&& fullFilePath,
+				ID3D12Resource** textureResource,
+				std::unique_ptr<uint8_t[]>& ddsData,
+				std::vector<D3D12_SUBRESOURCE_DATA>& subresourceData
+			)
+			{
+				HRESULT hr = S_OK;
+
+				hr = DirectX::LoadDDSTextureFromFile(device->GetHandle(), fullFilePath.c_str(), textureResource, ddsData, subresourceData);
+				assert(SUCCEEDED(hr));
+			}
 		};
 	}
 }

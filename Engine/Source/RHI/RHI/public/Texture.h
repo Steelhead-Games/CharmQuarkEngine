@@ -42,6 +42,7 @@ namespace cqe
 			};
 
 		public:
+			using ID = uint64_t;
 			using Ptr = RefCountPtr<Texture>;
 
 		public:

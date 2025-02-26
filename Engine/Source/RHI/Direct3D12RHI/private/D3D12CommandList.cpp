@@ -151,6 +151,14 @@ namespace cqe
 			m_NativeCommandList->IASetIndexBuffer(&ibView);
 		}
 
+		void D3D12CommandList::SetTextureDescriptorTable(uint32_t parameterIdx, Texture::Ptr texture)
+		{
+			assert(texture != nullptr);
+
+			D3D12Texture* d3d12Texture = reinterpret_cast<D3D12Texture*>(texture.Get());
+			SetGraphicsDescriptorTable(parameterIdx, d3d12Texture->GetGpuShaderResourceView().ptr);
+		}
+
 		void D3D12CommandList::SetGraphicsConstantBuffer(uint32_t ParameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset)
 		{
 			assert(buffer != nullptr);
@@ -162,10 +170,12 @@ namespace cqe
 
 		void D3D12CommandList::SetGraphicsDescriptorTable(uint32_t parameterIdx, uint64_t ptr)
 		{
+			assert(ptr != 0);
+
 			m_NativeCommandList->SetGraphicsRootDescriptorTable(parameterIdx, D3D12_GPU_DESCRIPTOR_HANDLE(ptr));
 		}
 
-		void D3D12CommandList::SetGraphicsRootShaderResourseView(uint32_t parameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset)
+		void D3D12CommandList::SetGraphicsShaderResourseView(uint32_t parameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset)
 		{
 			assert(buffer != nullptr);
 

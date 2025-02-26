@@ -37,6 +37,7 @@ namespace cqe
 
 		public:
 			virtual Texture::Ptr CreateTexture(const Texture::Description& description) = 0;
+			virtual void FreeTexture(const Texture::Ptr texture, Texture::UsageFlags::Flag usageFlag) = 0;
 			virtual Buffer::Ptr CreateBuffer(Buffer::Description&& description) = 0;
 			virtual Technique::Ptr CreateTechnique(
 				const Technique::ShaderInfo& shaderInfo,
@@ -58,8 +59,6 @@ namespace cqe
 			virtual Fence::Ptr GetFence() const = 0;
 			virtual CommandQueue::Ptr GetCommandQueue() const = 0;
 			virtual CommandList::Ptr GetCommandList() const = 0;
-
-			uint64_t SRV_TEST_HANDLE = 0;
 
 		protected:
 			Context() = default;

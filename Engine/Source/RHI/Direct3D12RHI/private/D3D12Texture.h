@@ -22,7 +22,8 @@ namespace cqe
 				RefCountPtr<ID3D12Resource> resource,
 				D3D12_CPU_DESCRIPTOR_HANDLE srv,
 				D3D12_CPU_DESCRIPTOR_HANDLE rtv,
-				D3D12_CPU_DESCRIPTOR_HANDLE dsv
+				D3D12_CPU_DESCRIPTOR_HANDLE dsv,
+				D3D12_GPU_DESCRIPTOR_HANDLE srvGpu = D3D12_GPU_DESCRIPTOR_HANDLE(0)
 			);
 			~D3D12Texture() = default;
 
@@ -30,6 +31,8 @@ namespace cqe
 			D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetView() const;
 			D3D12_CPU_DESCRIPTOR_HANDLE GetShaderResourceView() const;
 			D3D12_CPU_DESCRIPTOR_HANDLE GetDepthStencilView() const;
+
+			D3D12_GPU_DESCRIPTOR_HANDLE GetGpuShaderResourceView() const;
 
 			virtual RenderNativeObject GetNativeObject() override;
 			RefCountPtr<ID3D12Resource> GetHandle() const;
@@ -48,6 +51,8 @@ namespace cqe
 			D3D12_CPU_DESCRIPTOR_HANDLE m_RenderTargetView;
 			D3D12_CPU_DESCRIPTOR_HANDLE m_ShaderResourceView;
 			D3D12_CPU_DESCRIPTOR_HANDLE m_DepthStencilView;
+
+			D3D12_GPU_DESCRIPTOR_HANDLE m_GpuShaderResourceView;
 
 			RefCountPtr<ID3D12Resource> m_NativeResource = nullptr;
 

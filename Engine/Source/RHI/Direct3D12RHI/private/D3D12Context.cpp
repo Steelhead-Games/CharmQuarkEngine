@@ -242,10 +242,9 @@ namespace cqe
 					break;
 				}
 
-				std::unique_ptr<uint8_t[]> ddsData;
 				std::vector<D3D12_SUBRESOURCE_DATA> subresourceData;
-				HRESULT hr = DirectX::LoadDDSTextureFromFile(m_Device->GetHandle(), Core::g_FileSystem->GetFilePath("Texture.dds").c_str(), textureResource.ReleaseAndGetAddressOf(), ddsData, subresourceData);
-				assert(SUCCEEDED(hr));
+				std::unique_ptr<uint8_t[]> ddsData;
+				D3D12Util::LoadTextureToResource(m_Device, Core::g_FileSystem->GetFilePath("Texture.dds").c_str(), textureResource.ReleaseAndGetAddressOf(), ddsData, subresourceData);
 
 				const uint64_t dataSize = GetRequiredIntermediateSize(textureResource.Get(), 0, subresourceData.size());
 
@@ -261,10 +260,6 @@ namespace cqe
 
 				UpdateSubresources(m_CommandList->GetHandle(), textureResource.Get(), uploadRes, 0, 0, static_cast<uint32_t>(subresourceData.size()), subresourceData.data());
 
-				m_Fence->Sync(m_CommandQueue);
-
-				auto a = textureResource.Get()->GetDesc();
-
 				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(textureResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES);
 				m_CommandList->GetHandle()->ResourceBarrier(1, &barrier);
 
@@ -275,7 +270,6 @@ namespace cqe
 
 				m_SrvCbvUavHeap->Alloc(&srvCpuDesciptor, &srvGpuDesciptor);
 				m_Device->GetHandle()->CreateShaderResourceView(textureResource.Get(), &srvDesc, srvCpuDesciptor);
-				SRV_TEST_HANDLE = srvGpuDesciptor.ptr;
 			}
 
 			D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDesciptor = D3D12_CPU_DESCRIPTOR_HANDLE(0);
@@ -291,7 +285,27 @@ namespace cqe
 				m_Device->GetHandle()->CreateRenderTargetView(textureResource.Get(), &rtvDesc, rtvCpuDesciptor);
 			}
 
-			return D3D12Texture::Ptr(new D3D12Texture(description, textureResource, srvCpuDesciptor, rtvCpuDesciptor, depthStencilCpuDesciptor));
+			return D3D12Texture::Ptr(new D3D12Texture(description, textureResource, srvCpuDesciptor, rtvCpuDesciptor, depthStencilCpuDesciptor, srvGpuDesciptor));
+		}
+
+		void D3D12Context::FreeTexture(const Texture::Ptr texture, Texture::UsageFlags::Flag usageFlag)
+		{
+			D3D12Texture* d3d12Texture = reinterpret_cast<D3D12Texture*>(texture.Get());
+
+			if (usageFlag & Texture::UsageFlags::DepthStencil)
+			{
+				m_DsvHeap->Free(d3d12Texture->GetDepthStencilView());
+			}
+
+			if (usageFlag & Texture::UsageFlags::ShaderResource)
+			{
+				m_SrvCbvUavHeap->Free(d3d12Texture->GetShaderResourceView());
+			}
+
+			if (usageFlag & Texture::UsageFlags::RenderTarget)
+			{
+				m_RtvHeap->Free(d3d12Texture->GetRenderTargetView());
+			}
 		}
 
 		Buffer::Ptr D3D12Context::CreateBuffer(Buffer::Description&& description)
