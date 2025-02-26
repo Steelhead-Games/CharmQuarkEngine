@@ -42,6 +42,7 @@ namespace cqe::Render
 			RHI::Texture::Ptr DepthStencil;
 			std::vector<RHI::Mesh::Ptr> Meshes;
 			std::vector<Material*> Materials;
+			std::vector<RHI::Texture::Ptr> Textures;
 		};
 
 		std::unique_ptr<TemporalResources> g_RenderPassResources;
@@ -104,6 +105,14 @@ namespace cqe::Render
 				.InputSlot = 0,
 				.InputSlotClass = RHI::Technique::InputLayoutDescription::Classification::PerVertex,
 				.InstanceDataStepRate = 0
+			},
+			{
+				.SemanticName = "TEXCOORD",
+				.Index = 0,
+				.Format = RHI::ResourceFormat::RG32_FLOAT,
+				.InputSlot = 0,
+				.InputSlotClass = RHI::Technique::InputLayoutDescription::Classification::PerVertex,
+				.InstanceDataStepRate = 0
 			}
 		};
 
@@ -138,6 +147,11 @@ namespace cqe::Render
 		for (Material* material : g_RenderPassResources->Materials)
 		{
 			delete material;
+		}
+
+		for (RHI::Texture::Ptr& texturePtr : g_RenderPassResources->Textures)
+		{
+			m_rhi->FreeTexture(texturePtr, RHI::Texture::UsageFlags::ShaderResource);
 		}
 
 		g_RenderPassResources = nullptr;
@@ -179,6 +193,7 @@ namespace cqe::Render
 			//Draw
 			RHI::Mesh::ID meshID = renderObject->GetMeshID();
 			Material::ID materialID = renderObject->GetMaterialID();
+			RHI::Texture::ID textureID = renderObject->GetTextureID();
 
 			assert(meshID >= 0);
 			assert(meshID < g_RenderPassResources->Meshes.size());
@@ -186,6 +201,9 @@ namespace cqe::Render
 			assert(materialID >= 0);
 			assert(materialID < g_RenderPassResources->Materials.size());
 			assert(materialID != RenderObject::k_invalidMaterialID);
+			assert(textureID >= 0);
+			assert(textureID < g_RenderPassResources->Textures.size());
+			assert(textureID != RenderObject::k_invalidMaterialID);
 
 			// Projection and view matrices should be a part of Camera class
 			Math::Matrix4x4f view = Core::g_MainCamera->GetViewMatrix();
@@ -212,6 +230,8 @@ namespace cqe::Render
 
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(0, g_RenderPassResources->ObjectCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], meshID);
 			m_rhi->GetCommandList()->SetGraphicsConstantBuffer(1, g_RenderPassResources->MaterialCB[m_rhi->GetSwapChain()->GetCurrentBackBufferIdx()], materialID);
+
+			m_rhi->GetCommandList()->SetTextureDescriptorTable(2, g_RenderPassResources->Textures[textureID]);
 
 			m_rhi->GetCommandList()->DrawIndexedInstanced(
 				g_RenderPassResources->Meshes[meshID]->GetIndexBuffer()->GetDesc().Count,
@@ -284,14 +304,31 @@ namespace cqe::Render
 				.initData = geometry->GetIndices()
 			});
 
-			g_RenderPassResources->Meshes.push_back(mesh);
+		g_RenderPassResources->Meshes.push_back(mesh);
 
-			Material::ID materialID = g_RenderPassResources->Materials.size();
-			Material* material = new Material(materialID);
-			g_RenderPassResources->Materials.push_back(material);
+		Material::ID materialID = g_RenderPassResources->Materials.size();
+		Material* material = new Material(materialID);
+		g_RenderPassResources->Materials.push_back(material);
 
-			renderObject->SetMeshID(meshID);
-			renderObject->SetMaterialID(materialID);
-			m_RenderObjects.push_back(renderObject);
+		RHI::Texture::ID textureID = g_RenderPassResources->Textures.size();
+		RHI::Texture::Ptr texture = m_rhi->CreateTexture(
+			{
+				// TODO: fetch these values from somewhere
+				.Dimension = RHI::Texture::Dimensions::Two,
+				.Width = 512,
+				.Height = 512,
+				.MipLevels = 10,
+				.Format = RHI::ResourceFormat::BC1_UNORM,
+				.Flags = RHI::Texture::UsageFlags::ShaderResource
+			}
+		);
+		g_RenderPassResources->Textures.push_back(texture);
+
+		m_rhi->LoadTextureFromFile(texture, "Texture.dds");
+
+		renderObject->SetMeshID(meshID);
+		renderObject->SetMaterialID(materialID);
+		renderObject->SetTextureID(textureID);
+		m_RenderObjects.push_back(renderObject);
 	}
 }

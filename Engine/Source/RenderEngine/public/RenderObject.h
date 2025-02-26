@@ -16,9 +16,11 @@ namespace cqe::Render
 	{
 	public:
 		using MeshID = uint64_t;
+		using TextureID = uint64_t;
 
 		constexpr static MeshID k_invalidMeshID = std::numeric_limits<MeshID>::max();
 		constexpr static Material::ID k_invalidMaterialID = std::numeric_limits<Material::ID>::max();
+		constexpr static TextureID k_invalidTextureID = std::numeric_limits<TextureID>::max();
 
 	public:
 		RenderObject() = delete;
@@ -29,9 +31,11 @@ namespace cqe::Render
 	public:
 		const MeshID& GetMeshID() const { return m_MeshID; }
 		const Material::ID& GetMaterialID() const { return m_MaterialID; }
+		const TextureID& GetTextureID() const { return m_TextureID; }
 
 		void SetMeshID(MeshID id) { assert(RenderThread::IsRenderThread()); m_MeshID = id; }
 		void SetMaterialID(Material::ID id) { assert(RenderThread::IsRenderThread()); m_MaterialID = id; }
+		void SetTextureID(TextureID id) { assert(RenderThread::IsRenderThread()); m_TextureID = id; }
 
 		const Math::Vector3f& GetPosition(size_t frame) const { return m_Position[frame]; }
 		void SetPosition(Math::Vector3f position, size_t frame) { m_Position[frame] = position; }
@@ -44,5 +48,6 @@ namespace cqe::Render
 
 		MeshID m_MeshID = k_invalidMeshID;
 		Material::ID m_MaterialID = k_invalidMaterialID;
+		TextureID m_TextureID = k_invalidTextureID;
 	};
 }
