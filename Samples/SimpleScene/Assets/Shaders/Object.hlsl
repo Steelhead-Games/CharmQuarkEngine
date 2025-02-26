@@ -11,7 +11,7 @@ cbuffer cbPerMaterial : register(b1)
 }
 
 Texture2D<float4> TextureAlbedo : register(t0);
-sampler StaticLinearSampler : register(s3);
+SamplerState StaticLinearSampler : register(s3);
 
 struct VertexIn
 {

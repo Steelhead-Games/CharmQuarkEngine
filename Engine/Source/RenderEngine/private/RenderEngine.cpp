@@ -324,6 +324,8 @@ namespace cqe::Render
 		);
 		g_RenderPassResources->Textures.push_back(texture);
 
+		m_rhi->LoadTextureFromFile(texture, "Texture.dds");
+
 		renderObject->SetMeshID(meshID);
 		renderObject->SetMaterialID(materialID);
 		renderObject->SetTextureID(textureID);

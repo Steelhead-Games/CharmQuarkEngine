@@ -29,6 +29,7 @@ namespace cqe
 		public:
 			virtual Texture::Ptr CreateTexture(const Texture::Description& description) override;
 			virtual void FreeTexture(const Texture::Ptr texture, Texture::UsageFlags::Flag usageFlag) override;
+			virtual void LoadTextureFromFile(Texture::Ptr texture, std::string fileName) override;
 			virtual Buffer::Ptr CreateBuffer(Buffer::Description&& description) override;
 			virtual Technique::Ptr CreateTechnique(
 				const Technique::ShaderInfo& shaderInfo,

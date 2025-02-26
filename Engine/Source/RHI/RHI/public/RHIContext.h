@@ -38,6 +38,7 @@ namespace cqe
 		public:
 			virtual Texture::Ptr CreateTexture(const Texture::Description& description) = 0;
 			virtual void FreeTexture(const Texture::Ptr texture, Texture::UsageFlags::Flag usageFlag) = 0;
+			virtual void LoadTextureFromFile(Texture::Ptr texture, std::string fileName) = 0;
 			virtual Buffer::Ptr CreateBuffer(Buffer::Description&& description) = 0;
 			virtual Technique::Ptr CreateTechnique(
 				const Technique::ShaderInfo& shaderInfo,
