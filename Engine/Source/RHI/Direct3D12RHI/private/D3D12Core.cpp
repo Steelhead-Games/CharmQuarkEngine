@@ -243,29 +243,5 @@ namespace cqe
 
 			return d3d12ClearFlags;
 		}
-
-		D3D12_TEXTURE_ADDRESS_MODE ConvertToD3D12TextureAddressMode(SamplerAddressMode addressMode)
-		{
-			switch (addressMode)
-			{
-			case SamplerAddressMode::BORDER:
-				return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-			default:
-				ASSERT_NOT_IMPLEMENTED;
-				return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-			}
-		}
-
-		D3D12_FILTER ConvertToD3D12Filter(SamplerMipFilter filter)
-		{
-			switch (filter)
-			{
-			case SamplerMipFilter::MIN_MAG_LINEAR:
-				return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-			default:
-				ASSERT_NOT_IMPLEMENTED;
-				return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-			}
-		}
 	}
 }

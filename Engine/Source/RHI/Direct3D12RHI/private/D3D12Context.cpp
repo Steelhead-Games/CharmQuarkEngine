@@ -189,7 +189,7 @@ namespace cqe
 			optClear.DepthStencil.Depth = 1.0f;
 			optClear.DepthStencil.Stencil = 0;
 
-			bool noClear = !(description.Flags & (Texture::UsageFlags::RenderTarget | Texture::UsageFlags::DepthStencil));
+			bool noClear = description.Flags & Texture::UsageFlags::ShaderResource;
 
 			D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 			HRESULT hr = m_Device->GetHandle()->CreateCommittedResource(
@@ -222,10 +222,12 @@ namespace cqe
 			// Creating Shader Resource
 			if (description.Flags & Texture::UsageFlags::ShaderResource)
 			{
-				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
-				srvDesc.Format = ConvertToDXGIFormat(description.Format);
-				srvDesc.ViewDimension = description.Dimension == Texture::Dimensions::Two ? D3D12_SRV_DIMENSION_TEXTURE2D : D3D12_SRV_DIMENSION_TEXTURE3D;
-				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc
+				{
+					.Format = ConvertToDXGIFormat(description.Format),
+					.ViewDimension = description.Dimension == Texture::Dimensions::Two ? D3D12_SRV_DIMENSION_TEXTURE2D : D3D12_SRV_DIMENSION_TEXTURE3D,
+					.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING
+				};
 
 				switch (description.Dimension)
 				{

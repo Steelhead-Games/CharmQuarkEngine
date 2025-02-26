@@ -36,7 +36,6 @@ namespace cqe
 			virtual void SetTextureDescriptorTable(uint32_t parameterIdx, Texture::Ptr texture) override;
 			virtual void SetGraphicsConstantBuffer(uint32_t ParameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset = 0) override;
 			virtual void SetGraphicsDescriptorTable(uint32_t parameterIdx, uint64_t ptr) override;
-			virtual void SetGraphicsShaderResourseView(uint32_t parameterIdx, Buffer::Ptr buffer, uint32_t bufferOffset = 0) override;
 			virtual void SetTechnique(Technique::Ptr technique) override;
 			virtual void SetPrimitiveTopology(PrimitiveTopology topology) override;
 

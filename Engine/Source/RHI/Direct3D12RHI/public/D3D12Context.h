@@ -5,7 +5,6 @@
 #include <RHI/Direct3D12RHI/export.h>
 #include <Mesh.h>
 #include <Texture.h>
-#include <d3d12.h>
 
 namespace cqe
 {
